@@ -783,6 +783,40 @@
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="fm">__mul__</span><span class="p">(</span><span class="n">right</span><span class="p">)</span>
 
+    <span class="k">def</span><span class="w"> </span><span class="fm">__imatmul__</span><span class="p">(</span>
+        <span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">:</span> <span class="n">Quaternion</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Quaternion</span><span class="p">:</span>  <span class="c1"># lgtm[py/not-named-self] pylint: disable=no-self-argument</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Overloaded ``@=`` operator</span>
+
+<span class="sd">        :return: product</span>
+<span class="sd">        :rtype: Quaternion</span>
+<span class="sd">        :raises: ValueError</span>
+
+<span class="sd">        ``q1 @= q2`` sets ``q1 := qnorm(q1 * q2)``. Only meaningful for</span>
+<span class="sd">        ``UnitQuaternion``, which is the only subclass defining ``__matmul__``</span>
+<span class="sd">        (with normalization) that this delegates to; on a plain ``Quaternion``</span>
+<span class="sd">        this raises the same ``TypeError`` that ``q1 @ q2`` would.</span>
+
+<span class="sd">        Example:</span>
+
+<span class="sd">        .. runblock:: pycon</span>
+
+<span class="sd">            &gt;&gt;&gt; from spatialmath import UnitQuaternion</span>
+<span class="sd">            &gt;&gt;&gt; q = UnitQuaternion.Eul([0.1, 0.2, 0.3])</span>
+<span class="sd">            &gt;&gt;&gt; q @= UnitQuaternion.Eul([0.3, 0.4, 0.5])</span>
+<span class="sd">            &gt;&gt;&gt; print(q)</span>
+
+
+<span class="sd">        :seealso: :func:`__matmul__`</span>
+<span class="sd">        """</span>
+        <span class="c1"># NOT left.__matmul__(right): Quaternion itself has no __matmul__</span>
+        <span class="c1"># (only UnitQuaternion defines one), and calling the dunder</span>
+        <span class="c1"># directly as a plain attribute skips Python's normal operator</span>
+        <span class="c1"># fallback, raising a confusing AttributeError instead of the</span>
+        <span class="c1"># TypeError that `left @ right` raises consistently.</span>
+        <span class="k">return</span> <span class="n">left</span> <span class="o">@</span> <span class="n">right</span>
+
 <div class="viewcode-block" id="Quaternion.__pow__">
 <a class="viewcode-back" href="../../3d_quaternion.html#spatialmath.quaternion.Quaternion.__pow__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__pow__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Quaternion</span><span class="p">:</span>
@@ -2075,8 +2109,6 @@
 
 <span class="sd">        - ``q1 @ q2`` is the Hamilton product of ``q1`` and ``q2``, both unit</span>
 <span class="sd">          quaternions, followed by explicit normalization.</span>
-
-<span class="sd">        - `` q1 @= q2`` as above.</span>
 
 <span class="sd">        .. note:: This operator is functionally equivalent to ``*`` but is more</span>
 <span class="sd">            costly.  It is useful for cases where a pose is incrementally update</span>
