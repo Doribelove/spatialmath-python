@@ -894,7 +894,24 @@
         <span class="n">v</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">)</span>
         <span class="n">s</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">tol</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">c</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># v1 and v2 already (anti)parallel in the same direction</span>
+                <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="c1"># v1 and v2 point in opposite directions -- the formula below</span>
+            <span class="c1"># is singular here too (it divides by s**2), but unlike the</span>
+            <span class="c1"># c &gt; 0 case the answer isn't identity: any 180 degree</span>
+            <span class="c1"># rotation about an axis perpendicular to v1 takes v1 to v2.</span>
+            <span class="c1"># Closed form for a 180 degree rotation about unit axis u:</span>
+            <span class="c1"># R = 2*u*u^T - I (Rodrigues at theta=pi, sin=0, cos=-1).</span>
+            <span class="c1"># Pick u by crossing v1 with whichever world axis it's least</span>
+            <span class="c1"># aligned with, so the cross product is never itself</span>
+            <span class="c1"># degenerate.</span>
+            <span class="n">axis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+            <span class="n">axis</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">v1</span><span class="p">))]</span> <span class="o">=</span> <span class="mf">1.0</span>
+            <span class="n">u</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">unitvec</span><span class="p">(</span><span class="n">smb</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">axis</span><span class="p">))</span>
+            <span class="n">R</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">)</span>
             <span class="n">V</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
