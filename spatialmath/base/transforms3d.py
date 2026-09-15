@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 # Part of Spatial Math Toolbox for Python
 # Copyright (c) 2000 Peter Corke
 # MIT Licence, see details in top-level file: LICENCE
@@ -15,8 +17,10 @@ tuple, numpy array, numpy row vector or numpy column vector.
 # pylint: disable=invalid-name
 
 import sys
+import importlib.util
 from collections.abc import Iterable
 import math
+from typing import TYPE_CHECKING
 import numpy as np
 import warnings
 
@@ -46,11 +50,14 @@ from spatialmath.base.transformsNd import (
     Ab2M,
 )
 from spatialmath.base.quaternions import r2q, q2r, qeye, qslerp, qunit
-from spatialmath.base.graphics import plotvol3, axes_logic
-from spatialmath.base.animate import Animate
 import spatialmath.base.symbolic as sym
 
 from spatialmath.base.types import *
+
+if TYPE_CHECKING:
+    # for static type checkers only, both are only ever really imported
+    # lazily, inside trplot()/tranimate(), when a plot is actually made
+    from mpl_toolkits.mplot3d import Axes3D
 
 _eps = np.finfo(np.float64).eps
 
@@ -2994,13 +3001,10 @@ def trprint(
     return s
 
 
-try:
-    import matplotlib.pyplot as plt
-    from mpl_toolkits.mplot3d import Axes3D
-
-    _matplotlib_exists = True
-except ImportError:
-    _matplotlib_exists = False
+# cheap existence check, doesn't actually import matplotlib: the real
+# import happens lazily inside trplot()/tranimate() when a plot is
+# actually made
+_matplotlib_exists = importlib.util.find_spec("matplotlib") is not None
 
 if _matplotlib_exists:
 
@@ -3190,6 +3194,8 @@ if _matplotlib_exists:
         # TODO
         # animation
         # anaglyph
+
+        from spatialmath.base.graphics import plotvol3, axes_logic
 
         if dims is None:
             ax = axes_logic(ax, 3, projection)
@@ -3504,6 +3510,8 @@ if _matplotlib_exists:
 
         :seealso: `trplot`, `plotvol3`
         """
+        from spatialmath.base.animate import Animate
+
         # accept dim (matches Animate/plotvol2/plotvol3), keep dims as an
         # alias for backward compatibility with the previous docstring/API
         dim = kwargs.pop("dim", kwargs.pop("dims", None))
