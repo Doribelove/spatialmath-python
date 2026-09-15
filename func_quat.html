@@ -199,7 +199,7 @@ of delimeters given by <cite>delim</cite>.</p>
 <span class="go">' 1.0000 &lt;  2.0000,  3.0000,  4.0000 &gt;'</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">q</span> <span class="o">=</span> <span class="n">qrand</span><span class="p">()</span>   <span class="c1"># a unit quaternion</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">q2str</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">delim</span><span class="o">=</span><span class="p">(</span><span class="s1">'&lt;&lt;'</span><span class="p">,</span> <span class="s1">'&gt;&gt;'</span><span class="p">))</span>
-<span class="go">' 0.3848 &lt;&lt;  0.3773, -0.1391, -0.8308 &gt;&gt;'</span>
+<span class="go">' 0.6830 &lt;&lt;  0.1527, -0.6997, -0.1436 &gt;&gt;'</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -676,7 +676,7 @@ of delimeters given by <cite>delim</cite>.</p>
 <span class="go"> 1.0000 &lt;  2.0000,  3.0000,  4.0000 &gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">q</span> <span class="o">=</span> <span class="n">qrand</span><span class="p">()</span>   <span class="c1"># a unit quaternion</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">qprint</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">delim</span><span class="o">=</span><span class="p">(</span><span class="s1">'&lt;&lt;'</span><span class="p">,</span> <span class="s1">'&gt;&gt;'</span><span class="p">))</span>
-<span class="go"> 0.5597 &lt;&lt;  0.3204, -0.6583, -0.3883 &gt;&gt;</span>
+<span class="go"> 0.2729 &lt;&lt;  0.0163, -0.8485,  0.4531 &gt;&gt;</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -775,7 +775,7 @@ the product will be a unit-quaternion.</p>
 angular magnitude, which can be considered equivalent to a random SO(3) rotation.</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">spatialmath.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">qrand</span><span class="p">,</span> <span class="n">qprint</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">qprint</span><span class="p">(</span><span class="n">qrand</span><span class="p">())</span>
-<span class="go">-0.9897 &lt; -0.1006, -0.0952,  0.0359 &gt;</span>
+<span class="go"> 0.6563 &lt; -0.0129, -0.1012, -0.7476 &gt;</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -791,7 +791,7 @@ angular magnitude, which can be considered equivalent to a random SO(3) rotation
 <li><p><strong>q1</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>], <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>], <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ResizeEventType</span></code>[4]], <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dtype</span></code></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.floating" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">floating</span></code></a>]]]</span>) – final unit quaternion</p></li>
 <li><p><strong>s</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – interpolation coefficient in the range [0,1]</p></li>
 <li><p><strong>shortest</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]</span>) – choose shortest distance [default False]</p></li>
-<li><p><strong>tol</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – Tolerance when checking for identical quaternions, in multiples of eps, defaults to 20</p></li>
+<li><p><strong>tol</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – Tolerance when checking for coincident quaternions, in multiples of eps, defaults to 20</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -821,6 +821,11 @@ the option <code class="docutils literal notranslate"><span class="pre">'shortes
 <span class="gp">&gt;&gt;&gt; </span><span class="n">qprint</span><span class="p">(</span><span class="n">qslerp</span><span class="p">(</span><span class="n">q0</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>         <span class="c1"># this is in "half way" between</span>
 <span class="go"> 0.8165 &lt;  0.4082,  0.4082,  0.0000 &gt;</span>
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">q0</span></code> and <code class="docutils literal notranslate"><span class="pre">q1</span></code> are the same rotation, ie. their dot product is
+<span class="math notranslate nohighlight">\(\pm 1\)</span>, the interpolate is that rotation for all <code class="docutils literal notranslate"><span class="pre">s</span></code>.</p>
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>

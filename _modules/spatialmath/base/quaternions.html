@@ -898,6 +898,47 @@
 <span class="c1">#         return np.r_[qs, (math.sqrt(1.0 - qs**2) / nm) * kv]</span>
 
 
+<span class="k">def</span><span class="w"> </span><span class="nf">_qslerp_prepare</span><span class="p">(</span>
+    <span class="n">q0</span><span class="p">:</span> <span class="n">ArrayLike4</span><span class="p">,</span>
+    <span class="n">q1</span><span class="p">:</span> <span class="n">ArrayLike4</span><span class="p">,</span>
+    <span class="n">shortest</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span>
+    <span class="n">UnitQuaternionArray</span><span class="p">,</span>
+    <span class="n">UnitQuaternionArray</span><span class="p">,</span>
+    <span class="n">UnitQuaternionArray</span><span class="p">,</span>
+    <span class="nb">float</span><span class="p">,</span>
+    <span class="nb">float</span><span class="p">,</span>
+<span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Compute the loop-invariant slerp terms for two unit quaternions.</span>
+
+<span class="sd">    The original ``q0`` endpoint is returned separately from the sign-adjusted</span>
+<span class="sd">    value used by shortest-path interpolation, preserving the exact value at</span>
+<span class="sd">    ``s=0``.</span>
+<span class="sd">    """</span>
+    <span class="n">q0</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">q0</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="n">q1</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">q1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="n">q0_endpoint</span> <span class="o">=</span> <span class="n">q0</span>
+
+    <span class="n">dotprod</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">q0</span><span class="p">,</span> <span class="n">q1</span><span class="p">)</span>
+
+    <span class="c1"># If the dot product is negative, the quaternions</span>
+    <span class="c1"># have opposite handed-ness and slerp won't take</span>
+    <span class="c1"># the shorter path. Fix by reversing one quaternion.</span>
+    <span class="k">if</span> <span class="n">shortest</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">dotprod</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">q0</span> <span class="o">=</span> <span class="o">-</span><span class="n">q0</span>  <span class="c1"># pylint: disable=invalid-unary-operand-type</span>
+            <span class="n">dotprod</span> <span class="o">=</span> <span class="o">-</span><span class="n">dotprod</span>  <span class="c1"># pylint: disable=invalid-unary-operand-type</span>
+
+    <span class="n">dotprod</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">dotprod</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># sin(theta) is the length of the component of q1 orthogonal to q0.  Computing</span>
+    <span class="c1"># it this way keeps full relative precision as theta approaches 0 or pi, where</span>
+    <span class="c1"># sin(acos(dotprod)) does not: acos loses the small angle to rounding.</span>
+    <span class="n">sin_theta</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">q1</span> <span class="o">-</span> <span class="n">dotprod</span> <span class="o">*</span> <span class="n">q0</span><span class="p">))</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">sin_theta</span><span class="p">,</span> <span class="n">dotprod</span><span class="p">)</span>  <span class="c1"># theta is the angle between q0 and q1</span>
+    <span class="k">return</span> <span class="n">q0_endpoint</span><span class="p">,</span> <span class="n">q0</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">sin_theta</span><span class="p">,</span> <span class="n">theta</span>
+
+
 <div class="viewcode-block" id="qslerp">
 <a class="viewcode-back" href="../../../func_quat.html#spatialmath.base.quaternions.qslerp">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">qslerp</span><span class="p">(</span>
@@ -918,7 +959,7 @@
 <span class="sd">    :type s: float</span>
 <span class="sd">    :arg shortest: choose shortest distance [default False]</span>
 <span class="sd">    :type shortest: bool</span>
-<span class="sd">    :param tol: Tolerance when checking for identical quaternions, in multiples of eps, defaults to 20</span>
+<span class="sd">    :param tol: Tolerance when checking for coincident quaternions, in multiples of eps, defaults to 20</span>
 <span class="sd">    :type tol: float, optional</span>
 <span class="sd">    :return: interpolated unit-quaternion</span>
 <span class="sd">    :rtype: ndarray(4)</span>
@@ -943,37 +984,27 @@
 <span class="sd">        &gt;&gt;&gt; qprint(qslerp(q0, q1, 1))           # this is q1</span>
 <span class="sd">        &gt;&gt;&gt; qprint(qslerp(q0, q1, 0.5))         # this is in "half way" between</span>
 
+<span class="sd">    .. note:: If ``q0`` and ``q1`` are the same rotation, ie. their dot product is</span>
+<span class="sd">        :math:`\\pm 1`, the interpolate is that rotation for all ``s``.</span>
+
 <span class="sd">    .. warning:: There is no check that the passed values are unit-quaternions.</span>
 
 <span class="sd">    """</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">s</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"s must be in the interval [0,1]"</span><span class="p">)</span>
-    <span class="n">q0</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">q0</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
-    <span class="n">q1</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">q1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
-
+    <span class="n">q0_endpoint</span><span class="p">,</span> <span class="n">q0</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">sin_theta</span><span class="p">,</span> <span class="n">theta</span> <span class="o">=</span> <span class="n">_qslerp_prepare</span><span class="p">(</span><span class="n">q0</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">shortest</span><span class="o">=</span><span class="n">shortest</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">s</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">q0</span>
+        <span class="k">return</span> <span class="n">q0_endpoint</span>
     <span class="k">elif</span> <span class="n">s</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">q1</span>
 
-    <span class="n">dotprod</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">q0</span><span class="p">,</span> <span class="n">q1</span><span class="p">)</span>
-
-    <span class="c1"># If the dot product is negative, the quaternions</span>
-    <span class="c1"># have opposite handed-ness and slerp won't take</span>
-    <span class="c1"># the shorter path. Fix by reversing one quaternion.</span>
-    <span class="k">if</span> <span class="n">shortest</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">dotprod</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">q0</span> <span class="o">=</span> <span class="o">-</span><span class="n">q0</span>  <span class="c1"># pylint: disable=invalid-unary-operand-type</span>
-            <span class="n">dotprod</span> <span class="o">=</span> <span class="o">-</span><span class="n">dotprod</span>  <span class="c1"># pylint: disable=invalid-unary-operand-type</span>
-
-    <span class="n">dotprod</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">dotprod</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># Clip within domain of acos()</span>
-    <span class="n">theta</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">acos</span><span class="p">(</span><span class="n">dotprod</span><span class="p">)</span>  <span class="c1"># theta is the angle between rotation vectors</span>
-    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">tol</span> <span class="o">*</span> <span class="n">_eps</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">sin_theta</span> <span class="o">&gt;</span> <span class="n">tol</span> <span class="o">*</span> <span class="n">_eps</span><span class="p">:</span>
         <span class="n">s0</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">((</span><span class="mi">1</span> <span class="o">-</span> <span class="n">s</span><span class="p">)</span> <span class="o">*</span> <span class="n">theta</span><span class="p">)</span>
         <span class="n">s1</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">s</span> <span class="o">*</span> <span class="n">theta</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">((</span><span class="n">q0</span> <span class="o">*</span> <span class="n">s0</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">q1</span> <span class="o">*</span> <span class="n">s1</span><span class="p">))</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">((</span><span class="n">q0</span> <span class="o">*</span> <span class="n">s0</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">q1</span> <span class="o">*</span> <span class="n">s1</span><span class="p">))</span> <span class="o">/</span> <span class="n">sin_theta</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="c1"># quaternions are identical</span>
+        <span class="c1"># theta is 0 or pi: q0 and q1 are the same rotation, so is every</span>
+        <span class="c1"># interpolate between them</span>
         <span class="k">return</span> <span class="n">q0</span></div>
 
 
