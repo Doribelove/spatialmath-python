@@ -1338,10 +1338,10 @@
     <span class="n">q</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ArrayLike4</span><span class="p">,</span> <span class="n">ArrayLike4</span><span class="p">],</span>
     <span class="n">delim</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"&lt;"</span><span class="p">,</span> <span class="s2">"&gt;"</span><span class="p">),</span>
     <span class="n">fmt</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"</span><span class="si">{: .4f}</span><span class="s2">"</span><span class="p">,</span>
-    <span class="n">file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TextIO</span><span class="p">]</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TextIO</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""</span>
-<span class="sd">    Format a quaternion to a file</span>
+<span class="sd">    Compact single-line display of a quaternion</span>
 
 <span class="sd">    :arg q: unit-quaternion</span>
 <span class="sd">    :type q: array_like(4)</span>
@@ -1369,15 +1369,26 @@
 <span class="sd">        &gt;&gt;&gt; q = qrand()   # a unit quaternion</span>
 <span class="sd">        &gt;&gt;&gt; qprint(q, delim=('&lt;&lt;', '&gt;&gt;'))</span>
 
+<span class="sd">    .. deprecated:: 1.1.15</span>
+<span class="sd">        ``file=None`` to get the string back without printing is</span>
+<span class="sd">        deprecated - call :func:`~q2str` directly instead.</span>
+
 <span class="sd">    :seealso: :meth:`q2str`</span>
 <span class="sd">    """</span>
     <span class="n">q</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">q2str</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">delim</span><span class="o">=</span><span class="n">delim</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="n">fmt</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
             <span class="s2">"Usage: qprint(..., file=None) -&gt; str is deprecated, use q2str() instead"</span><span class="p">,</span>
             <span class="ne">DeprecationWarning</span><span class="p">,</span>
         <span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">q2str</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">delim</span><span class="o">=</span><span class="n">delim</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="n">fmt</span><span class="p">),</span> <span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span></div>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># file=False (the default) resolves to None here so print() looks</span>
+        <span class="c1"># up the *current* sys.stdout at call time, not whatever it was</span>
+        <span class="c1"># when this function was defined - that's what makes</span>
+        <span class="c1"># contextlib.redirect_stdout() work.</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="kc">None</span> <span class="k">if</span> <span class="n">file</span> <span class="ow">is</span> <span class="kc">False</span> <span class="k">else</span> <span class="n">file</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">s</span></div>
 
 
 

@@ -606,13 +606,13 @@ poses.</p></li>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">spatialmath</span><span class="w"> </span><span class="kn">import</span> <span class="n">SE3</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">SE3</span><span class="o">.</span><span class="n">Rand</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 <span class="go">SE3([</span>
-<span class="go">array([[ 0.89891087,  0.4194106 , -0.12670433, -0.18823248],</span>
-<span class="go">       [-0.02791534, -0.23377841, -0.97188908, -0.05293757],</span>
-<span class="go">       [-0.43724132,  0.87717866, -0.19843797, -0.4543993 ],</span>
+<span class="go">array([[ 0.3392705 ,  0.75571912, -0.56016438,  0.67183925],</span>
+<span class="go">       [-0.43647342, -0.40103643, -0.80539477, -0.13352531],</span>
+<span class="go">       [-0.83329855,  0.51774355,  0.19379148,  0.6626964 ],</span>
 <span class="go">       [ 0.        ,  0.        ,  0.        ,  1.        ]]),</span>
-<span class="go">array([[-0.24290276, -0.93384413, -0.2625517 , -0.34687182],</span>
-<span class="go">       [-0.4710408 , -0.12305909,  0.87348556,  0.2926366 ],</span>
-<span class="go">       [-0.84800873,  0.33584462, -0.4099873 , -0.40876947],</span>
+<span class="go">array([[-0.5293599 ,  0.18233681,  0.8285719 , -0.01495776],</span>
+<span class="go">       [-0.83221571,  0.07823569, -0.54890453,  0.01190558],</span>
+<span class="go">       [-0.16490939, -0.9801186 ,  0.11032872,  0.76666983],</span>
 <span class="go">       [ 0.        ,  0.        ,  0.        ,  1.        ]]) ])</span>
 </pre></div>
 </div>
@@ -3089,9 +3089,9 @@ values, the string has one pose per line.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">([</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">strline</span><span class="p">()</span>
 <span class="go">'t = 0, 0, 0; rpy/zyx = 11.5°, 0°, 0°t = 0, 0, 0; rpy/zyx = 17.2°, 0°, 0°'</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">strline</span><span class="p">(</span><span class="s1">'angvec'</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">strline</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s2">"angvec"</span><span class="p">)</span>
 <span class="go">'t = 0, 0, 0; angvec = (11.5° | 1, 0, 0)t = 0, 0, 0; angvec = (17.2° | 1, 0, 0)'</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">strline</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s1">'angvec'</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">"</span><span class="si">{:.6f}</span><span class="s2">"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">strline</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s2">"angvec"</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">"</span><span class="si">{:.6f}</span><span class="s2">"</span><span class="p">)</span>
 <span class="go">'t = 0.000000, 0.000000, 0.000000; angvec = (11.459156° | 1.000000, 0.000000, 0.000000)t = 0.000000, 0.000000, 0.000000; angvec = (17.188734° | 1.000000, 0.000000, 0.000000)'</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">SE2</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">strline</span><span class="p">()</span>

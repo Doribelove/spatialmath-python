@@ -89,6 +89,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#spatialmath.base.transforms3d.tr2eul"><code class="docutils literal notranslate"><span class="pre">tr2eul()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#spatialmath.base.transforms3d.tr2jac"><code class="docutils literal notranslate"><span class="pre">tr2jac()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#spatialmath.base.transforms3d.tr2rpy"><code class="docutils literal notranslate"><span class="pre">tr2rpy()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#spatialmath.base.transforms3d.tr2str"><code class="docutils literal notranslate"><span class="pre">tr2str()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#spatialmath.base.transforms3d.tr2x"><code class="docutils literal notranslate"><span class="pre">tr2x()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#spatialmath.base.transforms3d.tranimate"><code class="docutils literal notranslate"><span class="pre">tranimate()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#spatialmath.base.transforms3d.transl"><code class="docutils literal notranslate"><span class="pre">transl()</span></code></a></li>
@@ -1742,6 +1743,91 @@ which case we arbitrarily set <span class="math notranslate nohighlight">\(\thet
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="spatialmath.base.transforms3d.tr2str">
+<span class="sig-name descname"><span class="pre">tr2str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orient</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rpy/zyx'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'{:.3g}'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degsym</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'deg'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms3d.html#tr2str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms3d.tr2str" title="Link to this definition"></a></dt>
+<dd><p>Convert SO(3) or SE(3) matrices to compact single-line string</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>T</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ResizeEventType</span></code>[3], <code class="xref py py-class docutils literal notranslate"><span class="pre">ResizeEventType</span></code>[3]], <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dtype</span></code></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.floating" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">floating</span></code></a>]], <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ResizeEventType</span></code>[4], <code class="xref py py-class docutils literal notranslate"><span class="pre">ResizeEventType</span></code>[4]], <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dtype</span></code></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.floating" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">floating</span></code></a>]]]</span>) – SE(3) or SO(3) matrix</p></li>
+<li><p><strong>label</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – text label to put at start of line</p></li>
+<li><p><strong>orient</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – 3-angle convention to use</p></li>
+<li><p><strong>fmt</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – conversion format for each number in the format used with <code class="docutils literal notranslate"><span class="pre">format</span></code></p></li>
+<li><p><strong>unit</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – angular units: ‘rad’ [default], or ‘deg’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>formatted string</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – bad argument</p>
+</dd>
+</dl>
+<p>The matrix is formatted and returned as a string.</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">tr2str(R)</span></code> converts the SO(3) rotation matrix to a compact
+single-line string:</p>
+<blockquote>
+<div><p>[LABEL:] ORIENTATION UNIT</p>
+</div></blockquote>
+</li>
+</ul>
+<blockquote>
+<div><ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">tr2str(T)</span></code> prints the SE(3) homogoneous transform to a compact
+single-line string:</p>
+<blockquote>
+<div><p>[LABEL:] [t=X, Y, Z;] ORIENTATION UNIT</p>
+</div></blockquote>
+</li>
+</ul>
+<p>Orientation is expressed in one of several formats:</p>
+<ul class="simple">
+<li><p>‘rpy/zyx’ roll-pitch-yaw angles in ZYX axis order [default]</p></li>
+<li><p>‘rpy/yxz’ roll-pitch-yaw angles in YXZ axis order</p></li>
+<li><p>‘rpy/zyx’ roll-pitch-yaw angles in ZYX axis order</p></li>
+<li><p>‘eul’ Euler angles in ZYZ axis order</p></li>
+<li><p>‘angvec’ angle and axis</p></li>
+</ul>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">spatialmath.base</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">transl</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span> <span class="o">@</span> <span class="n">rpy2tr</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="s1">'deg'</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tr2str</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+<span class="go">'t = 1, 2, 3; rpy/zyx = 10°, 20°, 30°'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tr2str</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">'T'</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="s1">'angvec'</span><span class="p">)</span>
+<span class="go">'T: t = 1, 2, 3; angvec = (35.8° | 0.124, 0.616, 0.778)'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tr2str</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">'T'</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="s1">'angvec'</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">'</span><span class="si">{:8.4g}</span><span class="s1">'</span><span class="p">)</span>
+<span class="go">'T: t =        1,        2,        3; angvec = (   35.82° |    0.124,   0.6156,   0.7782)'</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>If the ‘rpy’ option is selected, then the particular angle sequence can be
+specified with the options ‘xyz’ or ‘yxz’ which are passed through to <code class="docutils literal notranslate"><span class="pre">tr2rpy</span></code>.
+‘zyx’ is the default.</p></li>
+<li><p>Default formatting is for compact display of data</p></li>
+<li><p>For tabular data set <code class="docutils literal notranslate"><span class="pre">fmt</span></code> to a fixed width format such as
+<code class="docutils literal notranslate"><span class="pre">fmt='{:.3g}'</span></code></p></li>
+</ul>
+</div>
+</div></blockquote>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 1.1.15: </span></p>
+<dl class="field-list simple">
+<dt class="field-odd">seealso<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.base.transforms3d.trprint" title="spatialmath.base.transforms3d.trprint"><code class="xref py py-func docutils literal notranslate"><span class="pre">trprint()</span></code></a> <a class="reference internal" href="func_2d.html#spatialmath.base.transforms2d.trprint2" title="spatialmath.base.transforms2d.trprint2"><code class="xref py py-func docutils literal notranslate"><span class="pre">trprint2()</span></code></a> <a class="reference internal" href="#spatialmath.base.transforms3d.tr2eul" title="spatialmath.base.transforms3d.tr2eul"><code class="xref py py-func docutils literal notranslate"><span class="pre">tr2eul()</span></code></a> <a class="reference internal" href="#spatialmath.base.transforms3d.tr2rpy" title="spatialmath.base.transforms3d.tr2rpy"><code class="xref py py-func docutils literal notranslate"><span class="pre">tr2rpy()</span></code></a> <a class="reference internal" href="#spatialmath.base.transforms3d.tr2angvec" title="spatialmath.base.transforms3d.tr2angvec"><code class="xref py py-func docutils literal notranslate"><span class="pre">tr2angvec()</span></code></a></p>
+</dd>
+<dt class="field-even">SymPy<span class="colon">:</span></dt>
+<dd class="field-even"><p>not supported</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="spatialmath.base.transforms3d.tr2x">
 <span class="sig-name descname"><span class="pre">tr2x</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">representation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rpy/xyz'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms3d.html#tr2x"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms3d.tr2x" title="Link to this definition"></a></dt>
 <dd><p>Convert SE(3) to an analytic representation</p>
@@ -2573,9 +2659,9 @@ option.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="spatialmath.base.transforms3d.trprint">
-<span class="sig-name descname"><span class="pre">trprint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orient</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rpy/zyx'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;_io.TextIOWrapper</span> <span class="pre">name='&lt;stdout&gt;'</span> <span class="pre">mode='w'</span> <span class="pre">encoding='utf-8'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'{:.3g}'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degsym</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'deg'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms3d.html#trprint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms3d.trprint" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">trprint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orient</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rpy/zyx'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'{:.3g}'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degsym</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'deg'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms3d.html#trprint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms3d.trprint" title="Link to this definition"></a></dt>
 <dd><blockquote>
-<div><p>Compact display of SO(3) or SE(3) matrices</p>
+<div><p>Compact single-line display of SO(3) or SE(3) matrices</p>
 </div></blockquote>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -2595,8 +2681,7 @@ option.</p>
 :return: formatted string
 :rtype: str
 :raises ValueError: bad argument</p>
-<p>The matrix is formatted and written to <code class="docutils literal notranslate"><span class="pre">file</span></code> and the
-string is returned.  To suppress writing to a file, set <code class="docutils literal notranslate"><span class="pre">file=None</span></code>.</p>
+<p>The matrix is formatted and written to <code class="docutils literal notranslate"><span class="pre">file</span></code>.</p>
 </p></li>
 </ul>
 </dd>
@@ -2605,13 +2690,11 @@ string is returned.  To suppress writing to a file, set <code class="docutils li
 </dd>
 </dl>
 <ul>
-<li><dl>
-<dt><code class="docutils literal notranslate"><span class="pre">trprint(R)</span></code> prints the SO(3) rotation matrix to stdout in a compact</dt><dd><p>single-line format:</p>
+<li><p><code class="docutils literal notranslate"><span class="pre">trprint(R)</span></code> prints the SO(3) rotation matrix to stdout in a compact
+single-line format:</p>
 <blockquote>
 <div><p>[LABEL:] ORIENTATION UNIT</p>
 </div></blockquote>
-</dd>
-</dl>
 </li>
 </ul>
 <blockquote>
@@ -2622,8 +2705,6 @@ compact single-line format:</p>
 <div><p>[LABEL:] [t=X, Y, Z;] ORIENTATION UNIT</p>
 </div></blockquote>
 </li>
-<li><p><code class="docutils literal notranslate"><span class="pre">trprint(X,</span> <span class="pre">file=None)</span></code> as above but returns the string rather than
-printing to a file</p></li>
 </ul>
 <p>Orientation is expressed in one of several formats:</p>
 <ul class="simple">
@@ -2633,13 +2714,16 @@ printing to a file</p></li>
 <li><p>‘eul’ Euler angles in ZYZ axis order</p></li>
 <li><p>‘angvec’ angle and axis</p></li>
 </ul>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">spatialmath.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">transl</span><span class="p">,</span> <span class="n">rpy2tr</span><span class="p">,</span> <span class="n">trprint</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">spatialmath.base</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">transl</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span> <span class="o">@</span> <span class="n">rpy2tr</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="s1">'deg'</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">trprint</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trprint</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+<span class="go">t = 1, 2, 3; rpy/zyx = 10°, 20°, 30°</span>
 <span class="go">'t = 1, 2, 3; rpy/zyx = 10°, 20°, 30°'</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">trprint</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">'T'</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="s1">'angvec'</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trprint</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">'T'</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="s1">'angvec'</span><span class="p">)</span>
+<span class="go">T: t = 1, 2, 3; angvec = (35.8° | 0.124, 0.616, 0.778)</span>
 <span class="go">'T: t = 1, 2, 3; angvec = (35.8° | 0.124, 0.616, 0.778)'</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">trprint</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">'T'</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="s1">'angvec'</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">'</span><span class="si">{:8.4g}</span><span class="s1">'</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trprint</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">'T'</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="s1">'angvec'</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">'</span><span class="si">{:8.4g}</span><span class="s1">'</span><span class="p">)</span>
+<span class="go">T: t =        1,        2,        3; angvec = (   35.82° |    0.124,   0.6156,   0.7782)</span>
 <span class="go">'T: t =        1,        2,        3; angvec = (   35.82° |    0.124,   0.6156,   0.7782)'</span>
 </pre></div>
 </div>
@@ -2654,15 +2738,19 @@ specified with the options ‘xyz’ or ‘yxz’ which are passed through to <c
 <code class="docutils literal notranslate"><span class="pre">fmt='{:.3g}'</span></code></p></li>
 </ul>
 </div>
+</div></blockquote>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 1.1.15: </span><code class="docutils literal notranslate"><span class="pre">file=None</span></code> to get the string back without printing is
+   deprecated - call <a class="reference internal" href="#spatialmath.base.transforms3d.tr2str" title="spatialmath.base.transforms3d.tr2str"><code class="xref py py-func docutils literal notranslate"><span class="pre">tr2str()</span></code></a> directly instead.</p>
 <dl class="field-list simple">
 <dt class="field-odd">seealso<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="func_2d.html#spatialmath.base.transforms2d.trprint2" title="spatialmath.base.transforms2d.trprint2"><code class="xref py py-func docutils literal notranslate"><span class="pre">trprint2()</span></code></a> <a class="reference internal" href="#spatialmath.base.transforms3d.tr2eul" title="spatialmath.base.transforms3d.tr2eul"><code class="xref py py-func docutils literal notranslate"><span class="pre">tr2eul()</span></code></a> <a class="reference internal" href="#spatialmath.base.transforms3d.tr2rpy" title="spatialmath.base.transforms3d.tr2rpy"><code class="xref py py-func docutils literal notranslate"><span class="pre">tr2rpy()</span></code></a> <a class="reference internal" href="#spatialmath.base.transforms3d.tr2angvec" title="spatialmath.base.transforms3d.tr2angvec"><code class="xref py py-func docutils literal notranslate"><span class="pre">tr2angvec()</span></code></a></p>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.base.transforms3d.tr2str" title="spatialmath.base.transforms3d.tr2str"><code class="xref py py-func docutils literal notranslate"><span class="pre">tr2str()</span></code></a> <a class="reference internal" href="func_2d.html#spatialmath.base.transforms2d.trprint2" title="spatialmath.base.transforms2d.trprint2"><code class="xref py py-func docutils literal notranslate"><span class="pre">trprint2()</span></code></a> <a class="reference internal" href="#spatialmath.base.transforms3d.tr2eul" title="spatialmath.base.transforms3d.tr2eul"><code class="xref py py-func docutils literal notranslate"><span class="pre">tr2eul()</span></code></a> <a class="reference internal" href="#spatialmath.base.transforms3d.tr2rpy" title="spatialmath.base.transforms3d.tr2rpy"><code class="xref py py-func docutils literal notranslate"><span class="pre">tr2rpy()</span></code></a> <a class="reference internal" href="#spatialmath.base.transforms3d.tr2angvec" title="spatialmath.base.transforms3d.tr2angvec"><code class="xref py py-func docutils literal notranslate"><span class="pre">tr2angvec()</span></code></a></p>
 </dd>
 <dt class="field-even">SymPy<span class="colon">:</span></dt>
 <dd class="field-even"><p>not supported</p>
 </dd>
 </dl>
-</div></blockquote>
+</div>
 </dd></dl>
 
 <dl class="py function">

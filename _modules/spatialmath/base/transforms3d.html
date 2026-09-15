@@ -94,6 +94,8 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">spatialmath.base.argcheck</span><span class="w"> </span><span class="kn">import</span> <span class="n">getunit</span><span class="p">,</span> <span class="n">getvector</span><span class="p">,</span> <span class="n">isvector</span><span class="p">,</span> <span class="n">isscalar</span><span class="p">,</span> <span class="n">ismatrix</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">spatialmath.base.vectors</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
@@ -2988,51 +2990,44 @@
 
 
 
-<div class="viewcode-block" id="trprint">
-<a class="viewcode-back" href="../../../func_3d.html#spatialmath.base.transforms3d.trprint">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">trprint</span><span class="p">(</span>
+<div class="viewcode-block" id="tr2str">
+<a class="viewcode-back" href="../../../func_3d.html#spatialmath.base.transforms3d.tr2str">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">tr2str</span><span class="p">(</span>
     <span class="n">T</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">SO3Array</span><span class="p">,</span> <span class="n">SE3Array</span><span class="p">],</span>
     <span class="n">orient</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"rpy/zyx"</span><span class="p">,</span>
     <span class="n">label</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
-    <span class="n">file</span><span class="p">:</span> <span class="n">TextIO</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span>
     <span class="n">fmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"</span><span class="si">{:.3g}</span><span class="s2">"</span><span class="p">,</span>
     <span class="n">degsym</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"deg"</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""</span>
-<span class="sd">     Compact display of SO(3) or SE(3) matrices</span>
+<span class="sd">    Convert SO(3) or SE(3) matrices to compact single-line string</span>
 
-<span class="sd">     :param T: SE(3) or SO(3) matrix</span>
-<span class="sd">     :type T: ndarray(4,4) or ndarray(3,3)</span>
-<span class="sd">     :param label: text label to put at start of line</span>
-<span class="sd">     :type label: str</span>
-<span class="sd">     :param orient: 3-angle convention to use</span>
-<span class="sd">     :type orient: str</span>
-<span class="sd">     :param file: file to write formatted string to. [default, stdout]</span>
-<span class="sd">     :type file: file object</span>
-<span class="sd">     :param fmt: conversion format for each number in the format used with ``format``</span>
-<span class="sd">     :type fmt: str</span>
-<span class="sd">     :param unit: angular units: 'rad' [default], or 'deg'</span>
-<span class="sd">     :type unit: str</span>
-<span class="sd">     :return: formatted string</span>
-<span class="sd">     :rtype: str</span>
-<span class="sd">     :raises ValueError: bad argument</span>
+<span class="sd">    :param T: SE(3) or SO(3) matrix</span>
+<span class="sd">    :type T: ndarray(4,4) or ndarray(3,3)</span>
+<span class="sd">    :param label: text label to put at start of line</span>
+<span class="sd">    :type label: str</span>
+<span class="sd">    :param orient: 3-angle convention to use</span>
+<span class="sd">    :type orient: str</span>
+<span class="sd">    :param fmt: conversion format for each number in the format used with ``format``</span>
+<span class="sd">    :type fmt: str</span>
+<span class="sd">    :param unit: angular units: 'rad' [default], or 'deg'</span>
+<span class="sd">    :type unit: str</span>
+<span class="sd">    :return: formatted string</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    :raises ValueError: bad argument</span>
 
-<span class="sd">     The matrix is formatted and written to ``file`` and the</span>
-<span class="sd">     string is returned.  To suppress writing to a file, set ``file=None``.</span>
+<span class="sd">    The matrix is formatted and returned as a string.</span>
 
-<span class="sd">    - ``trprint(R)`` prints the SO(3) rotation matrix to stdout in a compact</span>
-<span class="sd">       single-line format:</span>
+<span class="sd">    - ``tr2str(R)`` converts the SO(3) rotation matrix to a compact</span>
+<span class="sd">      single-line string:</span>
 
 <span class="sd">         [LABEL:] ORIENTATION UNIT</span>
 
-<span class="sd">     - ``trprint(T)`` prints the SE(3) homogoneous transform to stdout in a</span>
-<span class="sd">       compact single-line format:</span>
+<span class="sd">     - ``tr2str(T)`` prints the SE(3) homogoneous transform to a compact</span>
+<span class="sd">       single-line string:</span>
 
 <span class="sd">         [LABEL:] [t=X, Y, Z;] ORIENTATION UNIT</span>
-
-<span class="sd">     - ``trprint(X, file=None)`` as above but returns the string rather than</span>
-<span class="sd">       printing to a file</span>
 
 <span class="sd">     Orientation is expressed in one of several formats:</span>
 
@@ -3045,11 +3040,11 @@
 
 <span class="sd">     .. runblock:: pycon</span>
 
-<span class="sd">         &gt;&gt;&gt; from spatialmath.base import transl, rpy2tr, trprint</span>
+<span class="sd">         &gt;&gt;&gt; from spatialmath.base import *</span>
 <span class="sd">         &gt;&gt;&gt; T = transl(1,2,3) @ rpy2tr(10, 20, 30, 'deg')</span>
-<span class="sd">         &gt;&gt;&gt; trprint(T, file=None)</span>
-<span class="sd">         &gt;&gt;&gt; trprint(T, file=None, label='T', orient='angvec')</span>
-<span class="sd">         &gt;&gt;&gt; trprint(T, file=None, label='T', orient='angvec', fmt='{:8.4g}')</span>
+<span class="sd">         &gt;&gt;&gt; tr2str(T)</span>
+<span class="sd">         &gt;&gt;&gt; tr2str(T, label='T', orient='angvec')</span>
+<span class="sd">         &gt;&gt;&gt; tr2str(T, label='T', orient='angvec', fmt='{:8.4g}')</span>
 
 <span class="sd">     .. note::</span>
 
@@ -3060,7 +3055,9 @@
 <span class="sd">         - For tabular data set ``fmt`` to a fixed width format such as</span>
 <span class="sd">           ``fmt='{:.3g}'``</span>
 
-<span class="sd">     :seealso: :func:`~spatialmath.base.transforms2d.trprint2` :func:`~tr2eul` :func:`~tr2rpy` :func:`~tr2angvec`</span>
+<span class="sd">    .. versionadded:: 1.1.15</span>
+
+<span class="sd">     :seealso: :func:`~trprint` :func:`~spatialmath.base.transforms2d.trprint2` :func:`~tr2eul` :func:`~tr2rpy` :func:`~tr2angvec`</span>
 <span class="sd">     :SymPy: not supported</span>
 <span class="sd">    """</span>
 
@@ -3109,10 +3106,6 @@
             <span class="n">s</span> <span class="o">+=</span> <span class="s2">" angvec = (</span><span class="si">{}</span><span class="s2"> | </span><span class="si">{}</span><span class="s2">)"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">_vec2s</span><span class="p">(</span><span class="n">fmt</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"bad orientation format"</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">file</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
-
     <span class="k">return</span> <span class="n">s</span></div>
 
 
@@ -3120,6 +3113,99 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">_vec2s</span><span class="p">(</span><span class="n">fmt</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
     <span class="n">v</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">1e-6</span> <span class="k">else</span> <span class="mf">0.0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">v</span><span class="p">]</span>
     <span class="k">return</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">v</span><span class="p">])</span>
+
+
+<div class="viewcode-block" id="trprint">
+<a class="viewcode-back" href="../../../func_3d.html#spatialmath.base.transforms3d.trprint">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">trprint</span><span class="p">(</span>
+    <span class="n">T</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">SO3Array</span><span class="p">,</span> <span class="n">SE3Array</span><span class="p">],</span>
+    <span class="n">orient</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"rpy/zyx"</span><span class="p">,</span>
+    <span class="n">label</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
+    <span class="n">file</span><span class="p">:</span> <span class="n">TextIO</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">fmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"</span><span class="si">{:.3g}</span><span class="s2">"</span><span class="p">,</span>
+    <span class="n">degsym</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"deg"</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">     Compact single-line display of SO(3) or SE(3) matrices</span>
+
+<span class="sd">     :param T: SE(3) or SO(3) matrix</span>
+<span class="sd">     :type T: ndarray(4,4) or ndarray(3,3)</span>
+<span class="sd">     :param label: text label to put at start of line</span>
+<span class="sd">     :type label: str</span>
+<span class="sd">     :param orient: 3-angle convention to use</span>
+<span class="sd">     :type orient: str</span>
+<span class="sd">     :param file: file to write formatted string to. [default, stdout]</span>
+<span class="sd">     :type file: file object</span>
+<span class="sd">     :param fmt: conversion format for each number in the format used with ``format``</span>
+<span class="sd">     :type fmt: str</span>
+<span class="sd">     :param unit: angular units: 'rad' [default], or 'deg'</span>
+<span class="sd">     :type unit: str</span>
+<span class="sd">     :return: formatted string</span>
+<span class="sd">     :rtype: str</span>
+<span class="sd">     :raises ValueError: bad argument</span>
+
+<span class="sd">     The matrix is formatted and written to ``file``.</span>
+
+<span class="sd">    - ``trprint(R)`` prints the SO(3) rotation matrix to stdout in a compact</span>
+<span class="sd">      single-line format:</span>
+
+<span class="sd">         [LABEL:] ORIENTATION UNIT</span>
+
+<span class="sd">     - ``trprint(T)`` prints the SE(3) homogoneous transform to stdout in a</span>
+<span class="sd">       compact single-line format:</span>
+
+<span class="sd">         [LABEL:] [t=X, Y, Z;] ORIENTATION UNIT</span>
+
+<span class="sd">     Orientation is expressed in one of several formats:</span>
+
+<span class="sd">     - 'rpy/zyx' roll-pitch-yaw angles in ZYX axis order [default]</span>
+<span class="sd">     - 'rpy/yxz' roll-pitch-yaw angles in YXZ axis order</span>
+<span class="sd">     - 'rpy/zyx' roll-pitch-yaw angles in ZYX axis order</span>
+<span class="sd">     - 'eul' Euler angles in ZYZ axis order</span>
+<span class="sd">     - 'angvec' angle and axis</span>
+
+
+<span class="sd">     .. runblock:: pycon</span>
+
+<span class="sd">         &gt;&gt;&gt; from spatialmath.base import *</span>
+<span class="sd">         &gt;&gt;&gt; T = transl(1,2,3) @ rpy2tr(10, 20, 30, 'deg')</span>
+<span class="sd">         &gt;&gt;&gt; trprint(T)</span>
+<span class="sd">         &gt;&gt;&gt; trprint(T, label='T', orient='angvec')</span>
+<span class="sd">         &gt;&gt;&gt; trprint(T, label='T', orient='angvec', fmt='{:8.4g}')</span>
+
+<span class="sd">     .. note::</span>
+
+<span class="sd">         - If the 'rpy' option is selected, then the particular angle sequence can be</span>
+<span class="sd">           specified with the options 'xyz' or 'yxz' which are passed through to ``tr2rpy``.</span>
+<span class="sd">           'zyx' is the default.</span>
+<span class="sd">         - Default formatting is for compact display of data</span>
+<span class="sd">         - For tabular data set ``fmt`` to a fixed width format such as</span>
+<span class="sd">           ``fmt='{:.3g}'``</span>
+
+<span class="sd">    .. deprecated:: 1.1.15</span>
+<span class="sd">        ``file=None`` to get the string back without printing is</span>
+<span class="sd">        deprecated - call :func:`~tr2str` directly instead.</span>
+
+<span class="sd">     :seealso: :func:`~tr2str` :func:`~spatialmath.base.transforms2d.trprint2` :func:`~tr2eul` :func:`~tr2rpy` :func:`~tr2angvec`</span>
+<span class="sd">     :SymPy: not supported</span>
+<span class="sd">    """</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">tr2str</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="n">orient</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="n">fmt</span><span class="p">,</span> <span class="n">degsym</span><span class="o">=</span><span class="n">degsym</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># deprecated: return the string without printing, matching the</span>
+        <span class="c1"># original `if file: print(...)` falsy-skip behaviour</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">"Usage: trprint(..., file=None) -&gt; str is deprecated, use tr2str() instead"</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># file=False (the default) resolves to None here so print() looks</span>
+        <span class="c1"># up the *current* sys.stdout at call time, not whatever it was</span>
+        <span class="c1"># when this function was defined - that's what makes</span>
+        <span class="c1"># contextlib.redirect_stdout() work.</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="kc">None</span> <span class="k">if</span> <span class="n">file</span> <span class="ow">is</span> <span class="kc">False</span> <span class="k">else</span> <span class="n">file</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">s</span></div>
+
 
 
 <span class="k">try</span><span class="p">:</span>

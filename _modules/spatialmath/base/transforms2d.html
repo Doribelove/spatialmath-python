@@ -94,6 +94,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
@@ -1103,23 +1104,114 @@
 
 
 
-<div class="viewcode-block" id="trprint2">
-<a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.trprint2">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">trprint2</span><span class="p">(</span>
+<div class="viewcode-block" id="tr2str2">
+<a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.tr2str2">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">tr2str2</span><span class="p">(</span>
     <span class="n">T</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">SO2Array</span><span class="p">,</span> <span class="n">SE2Array</span><span class="p">],</span>
     <span class="n">label</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
-    <span class="n">file</span><span class="p">:</span> <span class="n">TextIO</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span>
     <span class="n">fmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"</span><span class="si">{:.3g}</span><span class="s2">"</span><span class="p">,</span>
     <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"deg"</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""</span>
-<span class="sd">    Compact display of SE(2) or SO(2) matrices</span>
+<span class="sd">    Convert SO(2) or SE(3) matrices to compact single-line string</span>
 
 <span class="sd">    :param T: matrix to format</span>
 <span class="sd">    :type T: ndarray(3,3) or ndarray(2,2)</span>
 <span class="sd">    :param label: text label to put at start of line</span>
 <span class="sd">    :type label: str</span>
-<span class="sd">    :param file: file to write formatted string to</span>
+<span class="sd">    :param fmt: conversion format for each number</span>
+<span class="sd">    :type fmt: str</span>
+<span class="sd">    :param unit: angular units: 'rad' [default], or 'deg'</span>
+<span class="sd">    :type unit: str</span>
+<span class="sd">    :return: formatted string</span>
+<span class="sd">    :rtype: str</span>
+
+<span class="sd">    The matrix is formatted and written to ``file`` and the</span>
+<span class="sd">    string is returned.  To suppress writing to a file, set ``file=None``.</span>
+
+<span class="sd">    - ``tr2str2(R)`` displays the SO(2) rotation matrix in a compact</span>
+<span class="sd">      single-line format and returns the string::</span>
+
+<span class="sd">        [LABEL:] θ UNIT</span>
+
+<span class="sd">    - ``tr2str2(T)`` displays the SE(2) homogoneous transform in a compact</span>
+<span class="sd">      single-line format and returns the string::</span>
+
+<span class="sd">        [LABEL:] [t=X, Y;] θ UNIT</span>
+
+<span class="sd">    .. runblock:: pycon</span>
+
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import *</span>
+<span class="sd">        &gt;&gt;&gt; T = transl2(1,2) @ trot2(0.3)</span>
+<span class="sd">        &gt;&gt;&gt; tr2str2(T, label='T')</span>
+<span class="sd">        &gt;&gt;&gt; tr2str2(T, label='T', fmt='{:8.4g}')</span>
+
+<span class="sd">    .. note::</span>
+
+<span class="sd">        - Default formatting is for compact display of data</span>
+<span class="sd">        - For tabular data set ``fmt`` to a fixed width format such as</span>
+<span class="sd">          ``fmt='{:.3g}'``</span>
+
+<span class="sd">    .. versionadded:: 1.1.15</span>
+
+<span class="sd">    :seealso: :func:`~tr2str`</span>
+<span class="sd">    """</span>
+
+    <span class="n">s</span> <span class="o">=</span> <span class="s2">""</span>
+
+    <span class="k">if</span> <span class="n">label</span> <span class="o">!=</span> <span class="s2">""</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="s2">"</span><span class="si">{:s}</span><span class="s2">: "</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+
+    <span class="c1"># print the translational part if it exists</span>
+    <span class="k">if</span> <span class="n">ishom2</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="s2">"t = </span><span class="si">{}</span><span class="s2">;"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_vec2s</span><span class="p">(</span><span class="n">fmt</span><span class="p">,</span> <span class="n">transl2</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="n">SE2Array</span><span class="p">,</span> <span class="n">T</span><span class="p">))))</span>
+
+    <span class="n">angle</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">T</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">unit</span> <span class="o">==</span> <span class="s2">"deg"</span><span class="p">:</span>
+        <span class="n">angle</span> <span class="o">*=</span> <span class="mf">180.0</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="s2">" </span><span class="si">{}</span><span class="s2">°"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_vec2s</span><span class="p">(</span><span class="n">fmt</span><span class="p">,</span> <span class="p">[</span><span class="n">angle</span><span class="p">]))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="s2">" </span><span class="si">{}</span><span class="s2"> rad"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_vec2s</span><span class="p">(</span><span class="n">fmt</span><span class="p">,</span> <span class="p">[</span><span class="n">angle</span><span class="p">]))</span>
+
+    <span class="k">return</span> <span class="n">s</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_vec2s</span><span class="p">(</span><span class="n">fmt</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="n">ArrayLikePure</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Return a string representation for vector using the provided fmt.</span>
+
+<span class="sd">    :param fmt: format string for each value in v</span>
+<span class="sd">    :type fmt: str</span>
+<span class="sd">    :param tol: Tolerance when checking for near-zero values, in multiples of eps, defaults to 20</span>
+<span class="sd">    :type tol: float, optional</span>
+<span class="sd">    :return: string representation for the vector</span>
+<span class="sd">    :rtype: str</span>
+
+<span class="sd">    Return a string representation for vector using the provided fmt, where</span>
+<span class="sd">    near-zero values are rounded to 0.</span>
+<span class="sd">    """</span>
+
+    <span class="n">v</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">tol</span> <span class="o">*</span> <span class="n">_eps</span> <span class="k">else</span> <span class="mf">0.0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">v</span><span class="p">]</span>
+    <span class="k">return</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">v</span><span class="p">])</span>
+
+
+<div class="viewcode-block" id="trprint2">
+<a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.trprint2">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">trprint2</span><span class="p">(</span>
+    <span class="n">T</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">SO2Array</span><span class="p">,</span> <span class="n">SE2Array</span><span class="p">],</span>
+    <span class="n">label</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
+    <span class="n">file</span><span class="p">:</span> <span class="n">TextIO</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Compact single-line display of SE(2) or SO(2) matrices</span>
+
+<span class="sd">    :param T: matrix to format</span>
+<span class="sd">    :type T: ndarray(3,3) or ndarray(2,2)</span>
+<span class="sd">    :param label: text label to put at start of line</span>
+<span class="sd">    :type label: str</span>
+<span class="sd">    :param file: file to write formatted string to [default is stdout]</span>
 <span class="sd">    :type file: file object</span>
 <span class="sd">    :param fmt: conversion format for each number</span>
 <span class="sd">    :type fmt: str</span>
@@ -1145,8 +1237,8 @@
 
 <span class="sd">        &gt;&gt;&gt; from spatialmath.base import *</span>
 <span class="sd">        &gt;&gt;&gt; T = transl2(1,2) @ trot2(0.3)</span>
-<span class="sd">        &gt;&gt;&gt; trprint2(T, file=None, label='T')</span>
-<span class="sd">        &gt;&gt;&gt; trprint2(T, file=None, label='T', fmt='{:8.4g}')</span>
+<span class="sd">        &gt;&gt;&gt; trprint2(T, label='T')</span>
+<span class="sd">        &gt;&gt;&gt; trprint2(T, label='T', fmt='{:8.4g}')</span>
 
 
 <span class="sd">    .. note::</span>
@@ -1155,48 +1247,26 @@
 <span class="sd">        - For tabular data set ``fmt`` to a fixed width format such as</span>
 <span class="sd">          ``fmt='{:.3g}'``</span>
 
-<span class="sd">    :seealso: trprint</span>
+<span class="sd">    .. deprecated:: 1.1.15</span>
+<span class="sd">        ``file=None`` to get the string back without printing is</span>
+<span class="sd">        deprecated - call :func:`~tr2str2` directly instead.</span>
+
+<span class="sd">    :seealso: :func:`~tr2str2` :func:`~trprint`</span>
 <span class="sd">    """</span>
-
-    <span class="n">s</span> <span class="o">=</span> <span class="s2">""</span>
-
-    <span class="k">if</span> <span class="n">label</span> <span class="o">!=</span> <span class="s2">""</span><span class="p">:</span>
-        <span class="n">s</span> <span class="o">+=</span> <span class="s2">"</span><span class="si">{:s}</span><span class="s2">: "</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
-
-    <span class="c1"># print the translational part if it exists</span>
-    <span class="k">if</span> <span class="n">ishom2</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
-        <span class="n">s</span> <span class="o">+=</span> <span class="s2">"t = </span><span class="si">{}</span><span class="s2">;"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_vec2s</span><span class="p">(</span><span class="n">fmt</span><span class="p">,</span> <span class="n">transl2</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="n">SE2Array</span><span class="p">,</span> <span class="n">T</span><span class="p">))))</span>
-
-    <span class="n">angle</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">T</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
-    <span class="k">if</span> <span class="n">unit</span> <span class="o">==</span> <span class="s2">"deg"</span><span class="p">:</span>
-        <span class="n">angle</span> <span class="o">*=</span> <span class="mf">180.0</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span>
-        <span class="n">s</span> <span class="o">+=</span> <span class="s2">" </span><span class="si">{}</span><span class="s2">°"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_vec2s</span><span class="p">(</span><span class="n">fmt</span><span class="p">,</span> <span class="p">[</span><span class="n">angle</span><span class="p">]))</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">tr2str2</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">"Usage: trprint2(..., file=None) -&gt; str is deprecated, use tr2str2() instead"</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+        <span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">s</span> <span class="o">+=</span> <span class="s2">" </span><span class="si">{}</span><span class="s2"> rad"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_vec2s</span><span class="p">(</span><span class="n">fmt</span><span class="p">,</span> <span class="p">[</span><span class="n">angle</span><span class="p">]))</span>
-
-    <span class="k">if</span> <span class="n">file</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+        <span class="c1"># file=False (the default) resolves to None here so print() looks</span>
+        <span class="c1"># up the *current* sys.stdout at call time, not whatever it was</span>
+        <span class="c1"># when this function was defined - that's what makes</span>
+        <span class="c1"># contextlib.redirect_stdout() work.</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="kc">None</span> <span class="k">if</span> <span class="n">file</span> <span class="ow">is</span> <span class="kc">False</span> <span class="k">else</span> <span class="n">file</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">s</span></div>
 
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_vec2s</span><span class="p">(</span><span class="n">fmt</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="n">ArrayLikePure</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""</span>
-<span class="sd">    Return a string representation for vector using the provided fmt.</span>
-
-<span class="sd">    :param fmt: format string for each value in v</span>
-<span class="sd">    :type fmt: str</span>
-<span class="sd">    :param tol: Tolerance when checking for near-zero values, in multiples of eps, defaults to 20</span>
-<span class="sd">    :type tol: float, optional</span>
-<span class="sd">    :return: string representation for the vector</span>
-<span class="sd">    :rtype: str</span>
-
-<span class="sd">    Return a string representation for vector using the provided fmt, where</span>
-<span class="sd">    near-zero values are rounded to 0.</span>
-<span class="sd">    """</span>
-
-    <span class="n">v</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">tol</span> <span class="o">*</span> <span class="n">_eps</span> <span class="k">else</span> <span class="mf">0.0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">v</span><span class="p">]</span>
-    <span class="k">return</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">v</span><span class="p">])</span>
 
 
 <div class="viewcode-block" id="points2tr2">

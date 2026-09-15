@@ -467,11 +467,11 @@ values.</p></li>
 <p>Example:</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">spatialmath</span><span class="w"> </span><span class="kn">import</span> <span class="n">UnitQuaternion</span> <span class="k">as</span> <span class="n">UQ</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">UQ</span><span class="o">.</span><span class="n">Rand</span><span class="p">())</span>
-<span class="go"> 0.1120 &lt;&lt; -0.3674, -0.1185, -0.9156 &gt;&gt;</span>
+<span class="go"> 0.8242 &lt;&lt; -0.0386,  0.4429, -0.3508 &gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">UQ</span><span class="o">.</span><span class="n">Rand</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
-<span class="go"> 0.3740 &lt;&lt; -0.5409, -0.6186, -0.4300 &gt;&gt;</span>
-<span class="go"> 0.2517 &lt;&lt; -0.8002,  0.1498, -0.5233 &gt;&gt;</span>
-<span class="go"> 0.4328 &lt;&lt; -0.7524,  0.4960,  0.0221 &gt;&gt;</span>
+<span class="go"> 0.8858 &lt;&lt; -0.2009,  0.0229, -0.4178 &gt;&gt;</span>
+<span class="go"> 0.5208 &lt;&lt; -0.3056, -0.4514,  0.6570 &gt;&gt;</span>
+<span class="go"> 0.3350 &lt;&lt;  0.5145,  0.5718,  0.5441 &gt;&gt;</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -2059,6 +2059,27 @@ instance is modified.</p>
 </pre></div>
 </div>
 <p>where <code class="docutils literal notranslate"><span class="pre">X</span></code> is any of the SMTB classes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.quaternion.UnitQuaternion.printline">
+<span class="sig-name descname"><span class="pre">printline</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.quaternion.UnitQuaternion.printline" title="Link to this definition"></a></dt>
+<dd><p>Print quaternion in compact single-line format (superclass method)</p>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">spatialmath</span><span class="w"> </span><span class="kn">import</span> <span class="n">Quaternion</span><span class="p">,</span> <span class="n">UnitQuaternion</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span> <span class="o">=</span> <span class="n">Quaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span><span class="o">.</span><span class="n">printline</span><span class="p">()</span>
+<span class="go"> 1.0000 &lt;  2.0000,  3.0000,  4.0000 &gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span> <span class="o">=</span> <span class="n">UnitQuaternion</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span><span class="o">.</span><span class="n">printline</span><span class="p">()</span>
+<span class="go"> 0.9888 &lt;&lt;  0.1494,  0.0000,  0.0000 &gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span> <span class="o">=</span> <span class="n">UnitQuaternion</span><span class="o">.</span><span class="n">Rx</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span><span class="o">.</span><span class="n">printline</span><span class="p">()</span>
+<span class="go"> 0.9988 &lt;&lt;  0.0500,  0.0000,  0.0000 &gt;&gt;</span>
+<span class="go"> 0.9950 &lt;&lt;  0.0998,  0.0000,  0.0000 &gt;&gt;</span>
+<span class="go"> 0.9888 &lt;&lt;  0.1494,  0.0000,  0.0000 &gt;&gt;</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py method">

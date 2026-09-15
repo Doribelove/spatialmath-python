@@ -1083,7 +1083,28 @@
             <span class="n">delim</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"&lt;&lt;"</span><span class="p">,</span> <span class="s2">"&gt;&gt;"</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">delim</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"&lt;"</span><span class="p">,</span> <span class="s2">"&gt;"</span><span class="p">)</span>
-        <span class="k">return</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">smb</span><span class="o">.</span><span class="n">q2str</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">delim</span><span class="o">=</span><span class="n">delim</span><span class="p">)</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">])</span></div>
+        <span class="k">return</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">smb</span><span class="o">.</span><span class="n">q2str</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">delim</span><span class="o">=</span><span class="n">delim</span><span class="p">)</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">])</span>
+
+<div class="viewcode-block" id="Quaternion.printline">
+<a class="viewcode-back" href="../../3d_quaternion.html#spatialmath.quaternion.Quaternion.printline">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">printline</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Print quaternion in compact single-line format (superclass method)</span>
+
+<span class="sd">        Example:</span>
+
+<span class="sd">        .. runblock:: pycon</span>
+
+<span class="sd">            &gt;&gt;&gt; from spatialmath import Quaternion, UnitQuaternion</span>
+<span class="sd">            &gt;&gt;&gt; q = Quaternion([1,2,3,4])</span>
+<span class="sd">            &gt;&gt;&gt; q.printline()</span>
+<span class="sd">            &gt;&gt;&gt; q = UnitQuaternion.Rx(0.3)</span>
+<span class="sd">            &gt;&gt;&gt; q.printline()</span>
+<span class="sd">            &gt;&gt;&gt; q = UnitQuaternion.Rx([0.1, 0.2, 0.3])</span>
+<span class="sd">            &gt;&gt;&gt; q.printline()</span>
+
+<span class="sd">        """</span>
+        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+</div>
 
 
 

@@ -65,6 +65,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#spatialmath.base.transforms2d.tr2adjoint2"><code class="docutils literal notranslate"><span class="pre">tr2adjoint2()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#spatialmath.base.transforms2d.tr2jac2"><code class="docutils literal notranslate"><span class="pre">tr2jac2()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#spatialmath.base.transforms2d.tr2pos2"><code class="docutils literal notranslate"><span class="pre">tr2pos2()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#spatialmath.base.transforms2d.tr2str2"><code class="docutils literal notranslate"><span class="pre">tr2str2()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#spatialmath.base.transforms2d.tr2xyt"><code class="docutils literal notranslate"><span class="pre">tr2xyt()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#spatialmath.base.transforms2d.tradjoint2"><code class="docutils literal notranslate"><span class="pre">tradjoint2()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#spatialmath.base.transforms2d.tranimate2"><code class="docutils literal notranslate"><span class="pre">tranimate2()</span></code></a></li>
@@ -488,6 +489,68 @@ elative to {A} is represented by the homogeneous transform T = <span class="math
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="spatialmath.base.transforms2d.tr2str2">
+<span class="sig-name descname"><span class="pre">tr2str2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'{:.3g}'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'deg'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#tr2str2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.tr2str2" title="Link to this definition"></a></dt>
+<dd><p>Convert SO(2) or SE(3) matrices to compact single-line string</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>T</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ResizeEventType</span></code>[2], <code class="xref py py-class docutils literal notranslate"><span class="pre">ResizeEventType</span></code>[2]], <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dtype</span></code></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.floating" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">floating</span></code></a>]], <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ResizeEventType</span></code>[3], <code class="xref py py-class docutils literal notranslate"><span class="pre">ResizeEventType</span></code>[3]], <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dtype</span></code></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.floating" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">floating</span></code></a>]]]</span>) – matrix to format</p></li>
+<li><p><strong>label</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – text label to put at start of line</p></li>
+<li><p><strong>fmt</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – conversion format for each number</p></li>
+<li><p><strong>unit</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – angular units: ‘rad’ [default], or ‘deg’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>formatted string</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span></p>
+</dd>
+</dl>
+<p>The matrix is formatted and written to <code class="docutils literal notranslate"><span class="pre">file</span></code> and the
+string is returned.  To suppress writing to a file, set <code class="docutils literal notranslate"><span class="pre">file=None</span></code>.</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">tr2str2(R)</span></code> displays the SO(2) rotation matrix in a compact
+single-line format and returns the string:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">LABEL</span><span class="p">:]</span> <span class="n">θ</span> <span class="n">UNIT</span>
+</pre></div>
+</div>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tr2str2(T)</span></code> displays the SE(2) homogoneous transform in a compact
+single-line format and returns the string:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">LABEL</span><span class="p">:]</span> <span class="p">[</span><span class="n">t</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">;]</span> <span class="n">θ</span> <span class="n">UNIT</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">spatialmath.base</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">transl2</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="o">@</span> <span class="n">trot2</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tr2str2</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">'T'</span><span class="p">)</span>
+<span class="go">'T: t = 1, 2; 17.2°'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tr2str2</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">'T'</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">'</span><span class="si">{:8.4g}</span><span class="s1">'</span><span class="p">)</span>
+<span class="go">'T: t =        1,        2;    17.19°'</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>Default formatting is for compact display of data</p></li>
+<li><p>For tabular data set <code class="docutils literal notranslate"><span class="pre">fmt</span></code> to a fixed width format such as
+<code class="docutils literal notranslate"><span class="pre">fmt='{:.3g}'</span></code></p></li>
+</ul>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 1.1.15.</span></p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-func docutils literal notranslate"><span class="pre">tr2str()</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="spatialmath.base.transforms2d.tr2xyt">
 <span class="sig-name descname"><span class="pre">tr2xyt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rad'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#tr2xyt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.tr2xyt" title="Link to this definition"></a></dt>
 <dd><p>Convert SE(2) to x, y, theta</p>
@@ -833,8 +896,8 @@ between <cite>R0</cite> when <cite>s=0</cite> and <cite>R1</cite> when <cite>s=1
 <span class="go">       [-0.29552021,  0.95533649, -3.59460162],</span>
 <span class="go">       [ 0.        ,  0.        ,  1.        ]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">@</span> <span class="n">trinv2</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
-<span class="go">array([[ 1.00000000e+00, -9.37082533e-18,  8.88178420e-16],</span>
-<span class="go">       [-9.37082533e-18,  1.00000000e+00,  0.00000000e+00],</span>
+<span class="go">array([[ 1.00000000e+00, -9.37082533e-18,  4.44089210e-16],</span>
+<span class="go">       [-9.37082533e-18,  1.00000000e+00,  8.88178420e-16],</span>
 <span class="go">       [ 0.00000000e+00,  0.00000000e+00,  1.00000000e+00]])</span>
 </pre></div>
 </div>
@@ -1110,16 +1173,16 @@ set to a non-zero value.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="spatialmath.base.transforms2d.trprint2">
-<span class="sig-name descname"><span class="pre">trprint2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;_io.TextIOWrapper</span> <span class="pre">name='&lt;stdout&gt;'</span> <span class="pre">mode='w'</span> <span class="pre">encoding='utf-8'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'{:.3g}'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'deg'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#trprint2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.trprint2" title="Link to this definition"></a></dt>
-<dd><p>Compact display of SE(2) or SO(2) matrices</p>
+<span class="sig-name descname"><span class="pre">trprint2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#trprint2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.trprint2" title="Link to this definition"></a></dt>
+<dd><p>Compact single-line display of SE(2) or SO(2) matrices</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>T</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ResizeEventType</span></code>[2], <code class="xref py py-class docutils literal notranslate"><span class="pre">ResizeEventType</span></code>[2]], <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dtype</span></code></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.floating" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">floating</span></code></a>]], <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ResizeEventType</span></code>[3], <code class="xref py py-class docutils literal notranslate"><span class="pre">ResizeEventType</span></code>[3]], <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dtype</span></code></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.floating" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">floating</span></code></a>]]]</span>) – matrix to format</p></li>
 <li><p><strong>label</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – text label to put at start of line</p></li>
-<li><p><strong>file</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">TextIO</span></code></span>) – file to write formatted string to</p></li>
-<li><p><strong>fmt</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – conversion format for each number</p></li>
-<li><p><strong>unit</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – angular units: ‘rad’ [default], or ‘deg’</p></li>
+<li><p><strong>file</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">TextIO</span></code></span>) – file to write formatted string to [default is stdout]</p></li>
+<li><p><strong>fmt</strong> (<em>str</em>) – conversion format for each number</p></li>
+<li><p><strong>unit</strong> (<em>str</em>) – angular units: ‘rad’ [default], or ‘deg’</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -1147,9 +1210,11 @@ single-line format and returns the string:</p>
 </ul>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">spatialmath.base</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">transl2</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="o">@</span> <span class="n">trot2</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">trprint2</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">'T'</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trprint2</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">'T'</span><span class="p">)</span>
+<span class="go">T: t = 1, 2; 17.2°</span>
 <span class="go">'T: t = 1, 2; 17.2°'</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">trprint2</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">'T'</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">'</span><span class="si">{:8.4g}</span><span class="s1">'</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trprint2</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">'T'</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">'</span><span class="si">{:8.4g}</span><span class="s1">'</span><span class="p">)</span>
+<span class="go">T: t =        1,        2;    17.19°</span>
 <span class="go">'T: t =        1,        2;    17.19°'</span>
 </pre></div>
 </div>
@@ -1161,9 +1226,13 @@ single-line format and returns the string:</p>
 <code class="docutils literal notranslate"><span class="pre">fmt='{:.3g}'</span></code></p></li>
 </ul>
 </div>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 1.1.15: </span><code class="docutils literal notranslate"><span class="pre">file=None</span></code> to get the string back without printing is
+deprecated - call <a class="reference internal" href="#spatialmath.base.transforms2d.tr2str2" title="spatialmath.base.transforms2d.tr2str2"><code class="xref py py-func docutils literal notranslate"><span class="pre">tr2str2()</span></code></a> directly instead.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Seealso<span class="colon">:</span></dt>
-<dd class="field-odd"><p>trprint</p>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.base.transforms2d.tr2str2" title="spatialmath.base.transforms2d.tr2str2"><code class="xref py py-func docutils literal notranslate"><span class="pre">tr2str2()</span></code></a> <code class="xref py py-func docutils literal notranslate"><span class="pre">trprint()</span></code></p>
 </dd>
 </dl>
 </dd></dl>
