@@ -3706,8 +3706,8 @@
 
 <span class="sd">        Examples:</span>
 
-<span class="sd">                &gt;&gt;&gt; tranimate(transl(1,2,3)@trotx(1), frame='A', arrow=False, dims=[0, 5])</span>
-<span class="sd">                &gt;&gt;&gt; tranimate(transl(1,2,3)@trotx(1), frame='A', arrow=False, dims=[0, 5], movie='spin.mp4')</span>
+<span class="sd">                &gt;&gt;&gt; tranimate(transl(1,2,3)@trotx(1), frame='A', arrow=False, dim=[0, 5])</span>
+<span class="sd">                &gt;&gt;&gt; tranimate(transl(1,2,3)@trotx(1), frame='A', arrow=False, dim=[0, 5], movie='spin.mp4')</span>
 
 <span class="sd">        .. note:: For Jupyter this works with the ``notebook`` and ``TkAgg``</span>
 <span class="sd">            backends.</span>
@@ -3723,7 +3723,9 @@
 
 <span class="sd">        :seealso: `trplot`, `plotvol3`</span>
 <span class="sd">        """</span>
-        <span class="n">dim</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"dims"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="c1"># accept dim (matches Animate/plotvol2/plotvol3), keep dims as an</span>
+        <span class="c1"># alias for backward compatibility with the previous docstring/API</span>
+        <span class="n">dim</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"dim"</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"dims"</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
         <span class="n">ax</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"ax"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="n">anim</span> <span class="o">=</span> <span class="n">Animate</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="n">dim</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">anim</span><span class="o">.</span><span class="n">trplot</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
