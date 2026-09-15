@@ -833,8 +833,8 @@ between <cite>R0</cite> when <cite>s=0</cite> and <cite>R1</cite> when <cite>s=1
 <span class="go">       [-0.29552021,  0.95533649, -3.59460162],</span>
 <span class="go">       [ 0.        ,  0.        ,  1.        ]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">@</span> <span class="n">trinv2</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
-<span class="go">array([[ 1.00000000e+00, -9.37082533e-18,  4.44089210e-16],</span>
-<span class="go">       [-9.37082533e-18,  1.00000000e+00,  8.88178420e-16],</span>
+<span class="go">array([[ 1.00000000e+00, -9.37082533e-18,  8.88178420e-16],</span>
+<span class="go">       [-9.37082533e-18,  1.00000000e+00,  0.00000000e+00],</span>
 <span class="go">       [ 0.00000000e+00,  0.00000000e+00,  1.00000000e+00]])</span>
 </pre></div>
 </div>
@@ -1023,7 +1023,7 @@ set to a non-zero value.</p>
 <li><p><strong>labels</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – labels for the axes, defaults to X and Y</p></li>
 <li><p><strong>length</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – length of coordinate frame axes, default 1</p></li>
 <li><p><strong>arrow</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – show arrow heads, default True</p></li>
-<li><p><strong>ax</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.11.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code></a>]</span>) – the axes to plot into, defaults to current axes</p></li>
+<li><p><strong>ax</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.11.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code></a>]</span>) – the axes to plot into, defaults to current axes</p></li>
 <li><p><strong>block</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]</span>) – run the GUI main loop until all windows are closed, default None</p></li>
 <li><p><strong>dims</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>], <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>], <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dtype</span></code></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.floating" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">floating</span></code></a>]], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</span>) – dimension of plot volume as [xmin, xmax, ymin, ymax]</p></li>
 <li><p><strong>wtl</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – width-to-length ratio for arrows, default 0.2</p></li>
@@ -1222,7 +1222,7 @@ single-line format and returns the string:</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020-, Peter Corke..
-      <span class="lastupdated">Last updated on 03-Sep-2026.
+      <span class="lastupdated">Last updated on 15-Sep-2026.
       </span></p>
   </div>
 

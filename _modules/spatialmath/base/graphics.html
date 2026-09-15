@@ -1597,10 +1597,11 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># handle the case of Animate objects pretending to be Axes</span>
             <span class="n">classname</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
-            <span class="k">if</span> <span class="n">classname</span> <span class="o">==</span> <span class="s2">"Animate"</span><span class="p">:</span>
-                <span class="n">ret</span> <span class="o">=</span> <span class="mi">3</span>
-            <span class="k">elif</span> <span class="n">classname</span> <span class="o">==</span> <span class="s2">"Animate2"</span><span class="p">:</span>
-                <span class="n">ret</span> <span class="o">=</span> <span class="mi">2</span>
+            <span class="n">base_classes</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__bases__</span>
+            <span class="k">if</span> <span class="n">classname</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"Axes3DSubplot"</span><span class="p">,</span> <span class="s2">"Animate"</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">any</span><span class="p">(</span><span class="n">base_class</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"Axes3DSubplot"</span><span class="p">,</span> <span class="s2">"Animate"</span><span class="p">)</span> <span class="k">for</span> <span class="n">base_class</span> <span class="ow">in</span> <span class="n">base_classes</span><span class="p">):</span>
+                <span class="k">return</span> <span class="mi">3</span>
+            <span class="k">elif</span> <span class="n">classname</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"AxesSubplot"</span><span class="p">,</span> <span class="s2">"Animate2"</span><span class="p">):</span>
+                <span class="k">return</span> <span class="mi">2</span>
         <span class="c1"># print("_axes_dimensions ", ax, ret)</span>
         <span class="k">return</span> <span class="n">ret</span>
 
@@ -1979,7 +1980,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020-, Peter Corke..
-      <span class="lastupdated">Last updated on 03-Sep-2026.
+      <span class="lastupdated">Last updated on 15-Sep-2026.
       </span></p>
   </div>
 
