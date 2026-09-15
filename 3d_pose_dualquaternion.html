@@ -197,14 +197,14 @@ the rigid-body motion described by the SE3 value <code class="docutils literal n
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">spatialmath</span><span class="w"> </span><span class="kn">import</span> <span class="n">UnitDualQuaternion</span><span class="p">,</span> <span class="n">SE3</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rand</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
-<span class="go">   0.7649    0.07872   0.6394   -0.6174    </span>
-<span class="go">  -0.03444   0.9961   -0.08144  -0.2128    </span>
-<span class="go">  -0.6433    0.04028   0.7646   -0.9539    </span>
+<span class="go">   0.04394   0.9761    0.2129   -0.2753    </span>
+<span class="go">   0.7138    0.1184   -0.6902    0.7646    </span>
+<span class="go">  -0.6989    0.1823   -0.6916    0.3125    </span>
 <span class="go">   0         0         0         1         </span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">UnitDualQuaternion</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
-<span class="go"> 0.9388 &lt;&lt;  0.0324,  0.3416, -0.0301 &gt;&gt; + ε  0.0320 &lt; -0.1237, -0.1247, -0.5497 &gt;</span>
+<span class="go"> 0.3431 &lt;&lt;  0.6358,  0.6645, -0.1911 &gt;&gt; + ε -0.1366 &lt; -0.2241,  0.2042, -0.2809 &gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
 <span class="go">&lt;class 'spatialmath.DualQuaternion.UnitDualQuaternion'&gt;</span>
 </pre></div>
