@@ -220,8 +220,10 @@ class Line3Test(unittest.TestCase):
 
         # A loose angular tolerance must not shrink when Plucker coordinates grow.
         l1 = Line3.PointDir([0, 0, 0], [1, 0, 0])
-        almost_parallel = Line3.PointDir([0, 0, 1], [1, 1e-9, 0])
-        scaled = Line3.PointDir([0, 0, 1], [1e8, 0.1, 0])
+        # Only the directions matter here. A zero moment also avoids
+        # round-off in the constructor's Plucker orthogonality check.
+        almost_parallel = Line3.PointDir([0, 0, 0], [1, 1e-9, 0])
+        scaled = Line3.PointDir([0, 0, 0], [1e8, 0.1, 0])
         self.assertTrue(l1.isparallel(almost_parallel, tol=1e8))
         self.assertTrue(l1.isparallel(scaled, tol=1e8))
 
