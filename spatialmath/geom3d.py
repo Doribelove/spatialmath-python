@@ -693,7 +693,14 @@ class Line3(BasePoseList):
 
         :seealso: :meth:`__or__` :meth:`intersects`
         """
-        return bool(np.linalg.norm(np.cross(l1.w, l2.w)) < tol * _eps)
+        n1 = np.linalg.norm(l1.w)
+        n2 = np.linalg.norm(l2.w)
+        if n1 == 0 or n2 == 0:
+            return True
+
+        # Plucker coordinates are homogeneous: compare the angle, not the
+        # magnitude of the direction vectors.
+        return bool(np.linalg.norm(np.cross(l1.w / n1, l2.w / n2)) < tol * _eps)
 
     def isintersecting(
         l1, l2: Line3, tol: float = 20  # type: ignore
@@ -715,7 +722,15 @@ class Line3(BasePoseList):
 
         :seealso: :meth:`__xor__` :meth:`intersects` :meth:`isparallel`
         """
-        return not l1.isparallel(l2, tol=tol) and bool(abs(l1 * l2) < tol * _eps)
+        if l1.isparallel(l2, tol=tol):
+            return False
+
+        n1 = np.linalg.norm(l1.w)
+        n2 = np.linalg.norm(l2.w)
+        # Normalize both moments as well as directions before applying the
+        # intersection tolerance; each pair (v, w) may be rescaled freely.
+        reciprocal = np.dot(l1.w / n1, l2.v / n2) + np.dot(l2.w / n2, l1.v / n1)
+        return bool(abs(reciprocal) < tol * _eps)
 
     def __eq__(l1, l2: Line3) -> bool:  # type: ignore pylint: disable=no-self-argument
         """
@@ -836,7 +851,7 @@ class Line3(BasePoseList):
 
         :param l2: Second line
         :type l2: ``Line3``
-        :param tol: Tolerance in multiples of eps, defaults to 20
+        :param tol: Parallel-direction tolerance in multiples of eps, defaults to 20
         :type tol: float, optional
         :return: Closest distance between lines
         :rtype: float
@@ -847,20 +862,16 @@ class Line3(BasePoseList):
 
         :seealso: :meth:`closest_to_line`
         """
-        if l1 | l2:
-            # lines are parallel
-            l = np.cross(
-                l1.w, l1.v - l2.v * np.dot(l1.w, l2.w) / dot(l2.w, l2.w)
-            ) / np.linalg.norm(l1.w)
-        else:
-            # lines are not parallel
-            if abs(l1 * l2) < tol * _eps:
-                # lines intersect at a point
-                l = 0
-            else:
-                # lines don't intersect, find closest distance
-                l = abs(l1 * l2) / np.linalg.norm(np.cross(l1.w, l2.w)) ** 2
-        return l
+        w1, w2 = l1.uw, l2.uw
+        normal = np.cross(w1, w2)
+        normal_length = np.linalg.norm(normal)
+        delta = l2.pp - l1.pp
+        if normal_length <= tol * _eps:
+            # Parallel lines: remove the component along the common direction.
+            return float(np.linalg.norm(np.cross(delta, w1)))
+        # The displacement along the common normal is the shortest distance.
+        # Unit directions make the result independent of Plucker scaling.
+        return float(abs(np.dot(delta, normal)) / normal_length)
 
     def closest_to_line(
         l1, l2: Line3  # type:ignore
@@ -1009,16 +1020,12 @@ class Line3(BasePoseList):
         if l1 | l2:
             # no common perpendicular if lines are parallel
             return None
-        else:
-            # lines are skew or intersecting
-            w = np.cross(l1.w, l2.w)
-            v = (
-                np.cross(l1.v, l2.w)
-                - np.cross(l2.v, l1.w)
-                + (l1 * l2) * np.dot(l1.w, l2.w) * base.unitvec(np.cross(l1.w, l2.w))
-            )
 
-        return l1.__class__(v, w)
+        # The nearest point lies on both the common perpendicular and l1.
+        # Unit directions keep its direction independent of Plucker scaling.
+        point, _ = l1.closest_to_line(l2)
+        w = np.cross(l1.w / np.linalg.norm(l1.w), l2.w / np.linalg.norm(l2.w))
+        return l1.__class__.PointDir(point, w)
 
     def __mul__(
         left, right: Line3

@@ -275,6 +275,26 @@ class Test3D(unittest.TestCase):
         nt.assert_array_almost_equal(angvec2r(pi / 4, [0, 0, 1]), rotz(pi / 4))
         nt.assert_array_almost_equal(angvec2r(-pi / 4, [0, 0, 1]), rotz(-pi / 4))
 
+    def test_angvec2r_nonunit_axis(self):
+        # the axis is normalized, so its length is irrelevant
+        nt.assert_array_almost_equal(
+            angvec2r(0.5, [1, 2, 3]), angvec2r(0.5, np.array([1, 2, 3]) / np.sqrt(14))
+        )
+        nt.assert_array_almost_equal(angvec2r(pi / 4, [0, 0, 5]), rotz(pi / 4))
+
+    def test_angvec2r_zero_axis(self):
+        # zero rotation about a zero axis is the identity, any angle units
+        nt.assert_array_almost_equal(angvec2r(0, [0, 0, 0]), np.eye(3))
+        nt.assert_array_almost_equal(angvec2r(0, [0, 0, 0], unit="deg"), np.eye(3))
+
+        # a non-zero rotation about a zero axis is meaningless
+        with self.assertRaises(ValueError):
+            angvec2r(0.5, [0, 0, 0])
+        with self.assertRaises(ValueError):
+            angvec2r(pi, [0, 0, 0])
+        with self.assertRaises(ValueError):
+            angvec2r(90, [0, 0, 0], unit="deg")
+
     def test_angvec2tr(self):
         r2d = 180 / pi
 
@@ -289,6 +309,14 @@ class Test3D(unittest.TestCase):
         nt.assert_array_almost_equal(angvec2tr(0, [0, 0, 1]), trotz(0))
         nt.assert_array_almost_equal(angvec2tr(pi / 4, [0, 0, 1]), trotz(pi / 4))
         nt.assert_array_almost_equal(angvec2tr(-pi / 4, [0, 0, 1]), trotz(-pi / 4))
+
+        # non-unit axis is normalized
+        nt.assert_array_almost_equal(angvec2tr(pi / 4, [0, 0, 5]), trotz(pi / 4))
+
+        # zero rotation about a zero axis is the identity, otherwise an error
+        nt.assert_array_almost_equal(angvec2tr(0, [0, 0, 0]), np.eye(4))
+        with self.assertRaises(ValueError):
+            angvec2tr(0.5, [0, 0, 0])
 
         r2d = 180 / pi
 
@@ -318,6 +346,34 @@ class Test3D(unittest.TestCase):
 
         T = transl(1, 2, 3) @ rpy2tr(0.1, 0.2, 0.3)
         nt.assert_array_almost_equal(logm(T), trlog(T))
+
+    def test_trlog_near_identity(self):
+        # Regression test for #63: trlog's general-case branch divides by
+        # sin(theta), computed from trace(R) via acos. A near-identity R
+        # that isn't *exactly* np.eye(3) (as produced by real computation,
+        # not hand-constructed) must not raise or blow up.
+
+        # theta small enough that cos(theta) underflows to exactly 1.0 in
+        # float64, so trace(R) rounds to exactly 3 and acos(1.0) == 0.0
+        # exactly: this is the case that used to divide by sin(theta) == 0
+        # with no guard. R itself is not bitwise np.eye(3) (it still has
+        # sin(theta) noise off the diagonal), so this also exercises the
+        # "is this actually the identity" branch on a matrix that isn't one.
+        R = rotx(1e-9)
+        assert not np.array_equal(R, np.eye(3))
+        nt.assert_array_almost_equal(trlog(R, twist=True), [0, 0, 0])
+        nt.assert_array_almost_equal(trlog(R), skew([0, 0, 0]))
+
+        # theta small enough to be well within the near-identity regime, but
+        # not small enough to clamp: the general-case formula must stay
+        # accurate here rather than falling back to a coarse zero. This is
+        # the case a fuzzy identity-tolerance (checking R against I before
+        # computing theta, as originally proposed in #63) risks getting
+        # wrong in the other direction, by discarding a real small rotation.
+        theta = 1e-7
+        for R in (rotx(theta), roty(theta), rotz(theta)):
+            v = trlog(R, twist=True)
+            nt.assert_almost_equal(np.linalg.norm(v), theta, decimal=12)
 
     def test_trexp(self):
         R = trexp(skew([0.5, 0, 0]))

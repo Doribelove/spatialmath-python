@@ -306,17 +306,63 @@ class Quaternion(BasePoseList):
         ``q.conj()`` is the quaternion ``q`` with the vector part negated, ie.
         :math:`q = s \langle -v_x, -v_y, -v_z \rangle`
 
+        .. note:: For a ``UnitQuaternion`` this deliberately does **not**
+            canonicalize the result's scalar part to be non-negative, unlike
+            normal ``UnitQuaternion`` construction. ``UnitQuaternion``
+            construction canonicalizes because :math:`q` and :math:`-q`
+            represent the same rotation, which is the right behaviour when
+            building a unit quaternion from arbitrary data. But conjugation
+            is an algebraic operation, not a re-representation of a
+            rotation: it must satisfy :math:`q \cdot \bar{q} = 1` for any
+            downstream algebra to be correct (e.g. dual-quaternion
+            translation extraction, which relies on exactly this identity).
+            Re-canonicalizing the conjugate would silently return
+            :math:`-\bar{q}` whenever ``q`` has negative scalar part,
+            breaking that identity. See the example below: the scalar part
+            of the result matches the input's sign, it is not forced
+            positive.
+
+        .. versionchanged:: 1.1.18
+            Fixes a bug present in 1.1.17 and earlier: ``UnitQuaternion.conj()``
+            re-canonicalized its result's sign, silently returning
+            :math:`-\bar{q}` instead of the true conjugate whenever ``q`` had
+            negative scalar part. This broke any algebra relying on
+            :math:`q \cdot \bar{q} = 1`, including :class:`DualQuaternion`
+            translation extraction (``SE3()``), ``norm()`` (which could raise
+            ``ValueError`` from taking the square root of a small negative
+            float), and point transformation via ``dq * v``.
+
         Example:
 
         .. runblock:: pycon
 
-            >>> from spatialmath import Quaternion
+            >>> from spatialmath import Quaternion, UnitQuaternion
+            >>> import numpy as np
             >>> print(Quaternion.Pure([1,2,3]).conj())
+            >>> q = UnitQuaternion(np.array([[-0.5, 0.5, 0.5, 0.5]]), norm=False)
+            >>> print(q)
+            >>> print(q.conj())
 
         :seealso: :func:`~spatialmath.base.quaternions.qconj`
         """
-
-        return self.__class__([smb.qconj(q._A) for q in self])
+        # NB: iterate self.data directly, not `for q in self` -- indexing
+        # a UnitQuaternion (which iteration uses under the hood) goes
+        # through BasePoseList.__getitem__, which reconstructs each
+        # element via self.__class__(self.data[i], check=False) with no
+        # norm=False override, silently re-canonicalizing sign on every
+        # single access. Working from self.data sidesteps that entirely.
+        if isinstance(self, UnitQuaternion):
+            # Pass a 2D (N,4) array with norm=False so construction stores
+            # the conjugated array as-is, bypassing qunit()'s scalar-sign
+            # canonicalization -- see the note above for why that
+            # canonicalization must not apply here. A 1D (4,) array would
+            # instead be caught by the generic arghandler() path first,
+            # which normalizes/canonicalizes unconditionally regardless of
+            # norm -- the 2D-array path is what actually honours norm=False.
+            return self.__class__(
+                np.array([smb.qconj(d) for d in self.data]), norm=False
+            )
+        return self.__class__([smb.qconj(d) for d in self.data])
 
     def norm(self) -> float:
         r"""
@@ -381,6 +427,9 @@ class Quaternion(BasePoseList):
 
              \ln \| q \|,  \langle \frac{\vec{v}}{\| \vec{v} \|} \cos^{-1} \frac{s}{\| q \|} \rangle
 
+        The implementation uses the equivalent :math:`\operatorname{atan2}(\|\vec{v}\|, s)`
+        to avoid the loss of precision in ``acos`` for small rotation angles.
+
         For a ``UnitQuaternion`` the logarithm is a pure quaternion whose vector
         part :math:`\vec{v}` and :math:`\vec{v}/2` is a Euler vector: parallel
         to the axis of rotation and whose norm is the magnitude of rotation.
@@ -403,20 +452,17 @@ class Quaternion(BasePoseList):
         norm = self.norm()
         s = np.log(norm)
         if len(self) == 1:
-            if smb.iszerovec(self._A[1:4]):
+            n = math.hypot(*self._A[1:4])
+            if n == 0:
                 v = np.zeros((3,))
             else:
-                v = math.acos(np.clip(self._A[0] / norm, -1, 1)) * smb.unitvec(
-                    self._A[1:4]
-                )
+                v = math.atan2(n, self._A[0]) * self._A[1:4] / n
             return Quaternion(s=s, v=v)
         else:
-            v = [
-                np.zeros((3,))
-                if smb.iszerovec(A[1:4])
-                else math.acos(np.clip(A[0] / n, -1, 1)) * smb.unitvec(A[1:4])
-                for A, n in zip(self._A, norm)
-            ]
+            v = []
+            for A in self._A:
+                n = math.hypot(*A[1:4])
+                v.append(np.zeros((3,)) if n == 0 else math.atan2(n, A[0]) * A[1:4] / n)
             return Quaternion(s=s, v=np.array(v))
 
     def exp(self, tol: float = 20) -> Quaternion:
@@ -1437,7 +1483,7 @@ class UnitQuaternion(Quaternion):
 
     @classmethod
     def OA(cls, o: ArrayLike3, a: ArrayLike3) -> UnitQuaternion:
-        """
+        r"""
         Construct a new unit quaternion from two vectors
 
         :param o: 3-vector parallel to Y- axis
@@ -1498,13 +1544,17 @@ class UnitQuaternion(Quaternion):
             >>> print(UQ.AngVec(0, [1,0,0]))
             >>> print(UQ.AngVec(90, [1,0,0], unit='deg'))
 
-        .. note:: :math:`\theta = 0` the result in an identity quaternion, otherwise
-            ``V`` must have a finite length, ie. :math:`|V| > 0`.
+        .. note:: If :math:`\theta` is zero within the default tolerance of
+            :func:`~spatialmath.base.vectors.iszero`, the result is an identity
+            quaternion. Otherwise, ``v`` must have a nonzero norm.
 
         :seealso: :meth:`UnitQuaternion.angvec` :meth:`UnitQuaternion.exp` :func:`~spatialmath.base.transforms3d.angvec2r`
         """
         v = smb.getvector(v, 3)
         theta = smb.getunit(theta, unit, vector=False)
+        if smb.iszero(theta):
+            return cls()
+        v = smb.unitvec(v)
         return cls(
             s=math.cos(theta / 2), v=math.sin(theta / 2) * v, norm=False, check=False
         )

@@ -1766,6 +1766,12 @@ try:
             * A -> [-A, A, -A, A, -A, A]
             * [A,B] -> [A, B, A, B, A, B]
             * [A,B,C,D,E,F] -> [A, B, C, D, E, F]
+
+        A scalar is symmetric about zero, so its sign is ignored: ``-A`` is the
+        same as ``A``.  For the other forms the values are returned as given and
+        no ordering check is made.  If a minimum is greater than the
+        corresponding maximum, matplotlib will invert that axis when the limits
+        are applied, which is a convenient way to flip an axis direction.
         """
         if nd not in (2, 3):
             raise ValueError("nd is 2 or 3")
@@ -1776,6 +1782,7 @@ try:
 
         if nd == 2:
             if len(dim) == 1:
+                dim = abs(dim)
                 return np.r_[-dim, dim, -dim, dim]
             elif len(dim) == 2:
                 return np.r_[dim[0], dim[1], dim[0], dim[1]]
@@ -1785,6 +1792,7 @@ try:
                 raise ValueError("bad dimension specified")
         elif nd == 3:
             if len(dim) == 1:
+                dim = abs(dim)
                 return np.r_[-dim, dim, -dim, dim, -dim, dim]
             elif len(dim) == 2:
                 return np.r_[dim[0], dim[1], dim[0], dim[1], dim[0], dim[1]]
@@ -1792,6 +1800,37 @@ try:
                 return dim
             else:
                 raise ValueError("bad dimension specified")
+
+    def set_window_title(fig: plt.Figure, title: str) -> bool:
+        """
+        Set the title of the window containing a figure, if it has one
+
+        :param fig: the figure
+        :type fig: Figure
+        :param title: the window title
+        :type title: str
+        :return: True if the title was set
+        :rtype: bool
+
+        A figure has a window only if it is managed by pyplot and the backend
+        provides one.  A figure on a headless backend such as ``Agg``, or one
+        created directly with ``matplotlib.figure.Figure``, does not, and then
+        nothing is done and False is returned.
+
+        Example::
+
+            >>> from spatialmath.base import plotvol2, set_window_title
+            >>> ax = plotvol2(5)
+            >>> set_window_title(ax.figure, "my plot")
+
+        .. note:: The title of the window is not the title of the axes, see
+            :meth:`matplotlib.axes.Axes.set_title`.
+        """
+        manager = getattr(fig.canvas, "manager", None)
+        if manager is not None and hasattr(manager, "set_window_title"):
+            manager.set_window_title(title)
+            return True
+        return False
 
     def isnotebook() -> bool:
         """
@@ -1858,4 +1897,7 @@ except ImportError:  # pragma: no cover
         raise NotImplementedError("Matplotlib is not installed: pip install matplotlib")
 
     def plot_cylinder(*args, **kwargs) -> None:
+        raise NotImplementedError("Matplotlib is not installed: pip install matplotlib")
+
+    def set_window_title(*args, **kwargs) -> None:
         raise NotImplementedError("Matplotlib is not installed: pip install matplotlib")

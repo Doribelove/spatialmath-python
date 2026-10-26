@@ -9,6 +9,39 @@ from spatialmath.base import *
 # TODO check they actually create artists
 
 
+class TestWindowTitle(unittest.TestCase):
+    def teardown_method(self, method):
+        plt.close("all")
+
+    def test_sets_the_title_of_a_managed_figure(self):
+        from types import SimpleNamespace
+        from unittest import mock
+
+        manager = mock.Mock()
+        fig = SimpleNamespace(canvas=SimpleNamespace(manager=manager))
+        self.assertTrue(set_window_title(fig, "a title"))
+        manager.set_window_title.assert_called_once_with("a title")
+
+    def test_pyplot_figure(self):
+        # the Agg manager has no window, but does accept a title
+        fig = plt.figure()
+        self.assertIsInstance(set_window_title(fig, "a title"), bool)
+
+    def test_figure_without_a_manager(self):
+        from matplotlib.figure import Figure
+
+        self.assertFalse(set_window_title(Figure(), "a title"))
+
+    def test_manager_without_the_method(self):
+        from types import SimpleNamespace
+
+        class Manager:
+            pass
+
+        fig = SimpleNamespace(canvas=SimpleNamespace(manager=Manager()))
+        self.assertFalse(set_window_title(fig, "a title"))
+
+
 class TestGraphics(unittest.TestCase):
     def teardown_method(self, method):
         plt.close("all")
@@ -38,6 +71,25 @@ class TestGraphics(unittest.TestCase):
                 with self.subTest(nd=nd, dim=dim):
                     with self.assertRaisesRegex(ValueError, "nd is 2 or 3"):
                         expand_dims(dim, nd)
+
+    def test_expand_dims(self):
+        np.testing.assert_array_equal(expand_dims(3), [-3, 3, -3, 3])
+        np.testing.assert_array_equal(expand_dims(-3), [-3, 3, -3, 3])
+        np.testing.assert_array_equal(expand_dims([1, 2]), [1, 2, 1, 2])
+        np.testing.assert_array_equal(expand_dims([1, 2, 3, 4]), [1, 2, 3, 4])
+        # reversed limits are passed through, matplotlib inverts the axis
+        np.testing.assert_array_equal(expand_dims([2, 1]), [2, 1, 2, 1])
+
+        np.testing.assert_array_equal(expand_dims(-3, nd=3), [-3, 3, -3, 3, -3, 3])
+        np.testing.assert_array_equal(expand_dims([1, 2], nd=3), [1, 2] * 3)
+        np.testing.assert_array_equal(
+            expand_dims([1, 2, 3, 4, 5, 6], nd=3), [1, 2, 3, 4, 5, 6]
+        )
+
+        with self.assertRaises(ValueError):
+            expand_dims([1, 2, 3])
+        with self.assertRaises(ValueError):
+            expand_dims([1, 2, 3, 4], nd=3)
 
     @pytest.mark.skipif(
         sys.platform.startswith("darwin") and sys.version_info < (3, 11),

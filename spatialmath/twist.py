@@ -813,7 +813,7 @@ class Twist3(BaseTwist):
         """
         Unit twist
 
-        - ``S.unit()`` is a Twist2 objec3 representing a unit twist aligned with the
+        - ``S.unit()`` is a Twist3 object representing a unit twist aligned with the
           Twist ``S``.
 
         Example:
@@ -825,12 +825,12 @@ class Twist3(BaseTwist):
             >>> S = Twist3(T)
             >>> S.unit()
         """
-        if smb.iszerovec(self.w):
-            # rotational twist
-            return Twist3(self.S / smb.norm(S.w))
-        else:
-            # prismatic twist
+        if self.isprismatic:
+            # prismatic twist (zero rotation): normalize the direction vector
             return Twist3(smb.unitvec(self.v), [0, 0, 0])
+        else:
+            # general twist: normalize so |w| == 1
+            return Twist3(self.S / smb.norm(self.w))
 
     def ad(self):
         """
@@ -974,7 +974,7 @@ class Twist3(BaseTwist):
         :return: the pole of the twist
         :rtype: ndarray(3)
 
-        ``X.pole()`` is a point on the twist axis. For a pure translation
+        ``X.pole`` is a point on the twist axis. For a pure translation
         this point is at infinity.
 
         Example:
@@ -986,7 +986,7 @@ class Twist3(BaseTwist):
             >>> S = Twist3(T)
             >>> S.pole
         """
-        return np.cross(self.w, self.v) / self.theta
+        return np.cross(self.w, self.v) / np.dot(self.w, self.w)
 
     def SE3(self, theta=1, unit="rad"):
         """
@@ -1014,7 +1014,7 @@ class Twist3(BaseTwist):
 
         if len(theta) == 1:
             # theta is a scalar
-            return SE3(smb.trexp(self.S * theta))
+            return SE3([smb.trexp(S * theta[0]) for S in self.data])
         else:
             # theta is a vector
             if len(self) == 1:
@@ -1072,6 +1072,8 @@ class Twist3(BaseTwist):
 
         if len(self) == 1:
             return SE3([smb.trexp(self.S * t) for t in theta], check=False)
+        elif len(theta) == 1:
+            return SE3([smb.trexp(s * theta[0]) for s in self.data], check=False)
         elif len(self) == len(theta):
             return SE3([smb.trexp(s * t) for s, t in zip(self.S, theta)], check=False)
         else:
@@ -1487,7 +1489,7 @@ class Twist2(BaseTwist):
         :return: the pole of the twist
         :rtype: ndarray(2)
 
-        ``X.pole()`` is a point on the twist axis. For a pure translation
+        ``X.pole`` is a point on the twist axis. For a pure translation
         this point is at infinity.
 
         Example:
@@ -1497,10 +1499,10 @@ class Twist2(BaseTwist):
             >>> from spatialmath import SE2, Twist2
             >>> T = SE2(1, 2, 0.3)
             >>> S = Twist2(T)
-            >>> S.pole()
+            >>> S.pole
 
         """
-        p = np.cross(np.r_[0, 0, self.w], np.r_[self.v, 0]) / self.theta
+        p = np.cross(np.r_[0, 0, self.w], np.r_[self.v, 0]) / self.w**2
         return p[:2]
 
     # -------------------------  methods -------------------------------#
@@ -1530,15 +1532,19 @@ class Twist2(BaseTwist):
         """
         from spatialmath.pose2d import SE2
 
-        if unit != "rad" and self.isprismatic:
+        if unit != "rad" and any(s.isprismatic for s in self):
             print("Twist3.exp: using degree mode for a prismatic twist")
 
         theta = smb.getunit(theta, unit)
 
         if len(theta) == 1:
-            return SE2(smb.trexp2(self.S * theta))
-        else:
+            return SE2([smb.trexp2(S * theta[0]) for S in self.data])
+        elif len(self) == 1:
             return SE2([smb.trexp2(self.S * t) for t in theta])
+        elif len(self) == len(theta):
+            return SE2([smb.trexp2(S * t) for S, t in zip(self.data, theta)])
+        else:
+            raise ValueError("length of twist and theta not consistent")
 
     def skewa(self):
         """
@@ -1605,6 +1611,8 @@ class Twist2(BaseTwist):
 
         if len(self) == 1:
             return SE2([smb.trexp2(self.S * t) for t in theta], check=False)
+        elif len(theta) == 1:
+            return SE2([smb.trexp2(s * theta[0]) for s in self.data], check=False)
         elif len(self) == len(theta):
             return SE2([smb.trexp2(s * t) for s, t in zip(self.S, theta)], check=False)
         else:
@@ -1626,20 +1634,33 @@ class Twist2(BaseTwist):
             >>> S = Twist2(T)
             >>> S.unit()
         """
-        if smb.iszerovec(self.w):
-            # rotational twist
-            return Twist2(self.S / smb.norm(S.w))
+        if self.isprismatic:
+            # prismatic twist (zero rotation): normalize the direction vector
+            return Twist2(smb.unitvec(self.v), 0)
         else:
-            # prismatic twist
-            return Twist2(smb.unitvec(self.v), [0, 0, 0])
+            # general twist: normalize so |w| == 1 (w is a scalar for Twist2)
+            return Twist2(self.S / abs(self.w))
 
-    @property
     def ad(self):
-        """
-        Twist2.ad Logarithm of adjoint
+        r"""
+        Logarithm of adjoint of 2D twist
 
-        - ``S.ad()`` is the logarithm of the adjoint matrix of the corresponding
-          homogeneous transformation.
+        :return: logarithm of adjoint matrix
+        :rtype: ndarray(3,3), or list of ndarray if the twist is a sequence
+
+        ``S.ad()`` is the 3x3 matrix representation of the Lie bracket with
+        the twist ``S``, such that for twists ``S`` and ``T``
+
+        .. math::
+
+            \mathrm{ad}(S) \vec{T} = \vee \left( [S] [T] - [T] [S] \right)
+
+        where :math:`[S]` is the augmented skew-symmetric matrix of the twist.
+        For :math:`S = (v_x, v_y, \omega)` it is
+
+        .. math::
+
+            \begin{pmatrix} 0 & -\omega & v_y \\ \omega & 0 & -v_x \\ 0 & 0 & 0 \end{pmatrix}
 
         Example:
 
@@ -1648,16 +1669,46 @@ class Twist2(BaseTwist):
             >>> from spatialmath import SE2, Twist2
             >>> T = SE2(1, 2, 0.3)
             >>> S = Twist2(T)
-            >>> S.unit()
+            >>> S.ad()
 
-        :seealso: SE3.Ad.
+        .. note:: An alternative approach to computing the adjoint is to
+            exponentiate this 3x3 matrix.
+
+        :seealso: :func:`Twist2.Ad`
         """
-        return np.array(
-            [
-                [smb.skew(self.w), smb.skew(self.v)],
-                [np.zeros((3, 3)), smb.skew(self.w)],
-            ]
-        )
+        if len(self) == 1:
+            v, w = self.v, self.w
+            return np.array([[0, -w, v[1]], [w, 0, -v[0]], [0, 0, 0]])
+        else:
+            return [x.ad() for x in self]
+
+    def Ad(self):
+        """
+        Adjoint of 2D twist
+
+        :return: adjoint matrix
+        :rtype: ndarray(3,3)
+
+        ``S.Ad()`` is the 3x3 adjoint matrix of the corresponding
+        homogeneous transformation.
+
+        For a twist representing motion from frame {B} to {A}, the adjoint will
+        transform a twist relative to frame {A} to one relative to frame {B}.
+
+        Example:
+
+        .. runblock:: pycon
+
+            >>> from spatialmath import Twist2
+            >>> S = Twist2([1, 2, 0.3])
+            >>> S.Ad()
+
+        .. note:: This method computes the equivalent SE(2) matrix, then the adjoint
+            of that.
+
+        :seealso: :func:`Twist2.ad`, :func:`Twist2.SE2`, :func:`Twist2.exp`
+        """
+        return self.SE2().Ad()
 
     @classmethod
     def Tx(cls, x):
